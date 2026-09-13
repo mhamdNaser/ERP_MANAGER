@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+
+<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+
+<style>
+html, body {
+  height: 100%;
+  margin: 0;
+}
+#panorama {
+  width: 100%;
+  height: 100vh;
+}
+</style>
+
+</head>
+
+<body>
+
+<div id="panorama"></div>
+
+<script>
+const fallbackImage = "http://192.168.1.30/swyda/IMG_2.jpg";
+
+function currentDirectoryUrl() {
+  return new URL(".", window.location.href);
+}
+
+function queryImagePath() {
+  const params = new URLSearchParams(window.location.search);
+  const namedImage = params.get("img");
+
+  if (namedImage) {
+    return namedImage;
+  }
+
+  const unnamedImage = params.get("");
+  if (unnamedImage) {
+    return unnamedImage;
+  }
+
+  const rawQuery = window.location.search.slice(1);
+  return rawQuery ? decodeURIComponent(rawQuery).replace(/^=/, "") : "";
+}
+
+function resolveImageUrl(value) {
+  const imagePath = (value || "").trim();
+
+  if (!imagePath || imagePath === "null" || imagePath === "undefined") {
+    return fallbackImage;
+  }
+
+  if (/^[a-z][a-z0-9+.-]*:/i.test(imagePath)) {
+    return imagePath;
+  }
+
+  return new URL(imagePath.replace(/^\/+/, ""), currentDirectoryUrl()).href;
+}
+
+const img = resolveImageUrl(queryImagePath());
+
+console.log("FINAL IMG =", img);
+
+// load viewer
+pannellum.viewer('panorama', {
+  type: 'equirectangular',
+  panorama: img,
+  autoLoad: true
+});
+</script>
+
+</body>
+</html>

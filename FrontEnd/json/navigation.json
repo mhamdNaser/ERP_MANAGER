@@ -1,0 +1,147 @@
+[
+  {
+    "id": "dashboard",
+    "labelKey": "dashboard",
+    "icon": "LayoutDashboard",
+    "section": "workspace"
+  },
+  {
+    "id": "tasks",
+    "labelKey": "navTasks",
+    "icon": "KanbanSquare",
+    "section": "workspace"
+  },
+  {
+    "id": "task-stats",
+    "labelKey": "navTaskStats",
+    "icon": "ChartColumn",
+    "permission": "tasks.statistics.view",
+    "section": "workspace"
+  },
+  {
+    "id": "drive",
+    "labelKey": "navDrive",
+    "icon": "HardDrive",
+    "section": "workspace"
+  },
+  {
+    "id": "reports",
+    "labelKey": "reports",
+    "icon": "ClipboardList",
+    "permission": "reports.view",
+    "section": "workspace"
+  },
+  {
+    "id": "new",
+    "labelKey": "newReport",
+    "icon": "FilePlus2",
+    "roles": [
+      "employee",
+      "technician"
+    ],
+    "section": "workspace"
+  },
+  {
+    "id": "communications",
+    "labelKey": "messages",
+    "icon": "Mail",
+    "permission": "messages.view",
+    "fallbackPermission": "correspondences.view",
+    "section": "navSectionComms"
+  },
+  {
+    "id": "formal-correspondences",
+    "labelKey": "correspondences",
+    "icon": "FileText",
+    "permission": "formal_correspondences.view",
+    "section": "navSectionComms"
+  },
+  {
+    "id": "circulars",
+    "labelKey": "circulars",
+    "icon": "Megaphone",
+    "permission": "circulars.view",
+    "section": "navSectionComms"
+  },
+  {
+    "id": "forms",
+    "labelKey": "customForms",
+    "icon": "FileInput",
+    "section": "navSectionComms"
+  },
+  {
+    "id": "organization",
+    "labelKey": "organization",
+    "icon": "Building2",
+    "permission": "organization.view",
+    "section": "navSectionAdmin"
+  },
+  {
+    "id": "offices",
+    "labelKey": "offices",
+    "icon": "Landmark",
+    "permission": "offices.manage",
+    "section": "navSectionAdmin"
+  },
+  {
+    "id": "database",
+    "labelKey": "databaseCenter",
+    "icon": "Database",
+    "roles": [
+      "database_manager"
+    ],
+    "section": "navSectionAdmin"
+  },
+  {
+    "id": "org-tree",
+    "labelKey": "navOrgTree",
+    "icon": "Landmark",
+    "permission": "organization.tree.manage",
+    "roles": [
+      "database_manager"
+    ],
+    "section": "navSectionAdmin"
+  },
+  {
+    "id": "hr",
+    "labelKey": "navHr",
+    "icon": "Users",
+    "permission": "hr.view",
+    "section": "navSectionAdmin"
+  },
+  {
+    "id": "employees",
+    "labelKey": "employees",
+    "icon": "Users",
+    "roles": [
+      "general_manager",
+      "database_manager"
+    ],
+    "section": "navSectionAdmin"
+  },
+  {
+    "id": "permissions",
+    "labelKey": "rolePermissions",
+    "icon": "ShieldCheck",
+    "permission": "roles.permissions.manage",
+    "section": "navSectionAdmin"
+  },
+  {
+    "id": "hr-requests",
+    "labelKey": "navMyHrRequests",
+    "icon": "CalendarCheck",
+    "section": "navSectionAccount"
+  },
+  {
+    "id": "profile",
+    "labelKey": "myProfile",
+    "icon": "UserRound",
+    "section": "navSectionAccount"
+  },
+  {
+    "id": "guide",
+    "labelKey": "navGuide",
+    "icon": "BookOpenCheck",
+    "section": "navSectionAccount"
+  }
+]

@@ -1,0 +1,285 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+/* =========================================================================
+   CND Manager — Design tokens
+   Flat, quiet, international admin look. No motion, minimal shadows.
+   ========================================================================= */
+@theme {
+  --font-sans: "Noto Sans Arabic", "IBM Plex Sans Arabic", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Noto Kufi Arabic", "Noto Sans Arabic", ui-sans-serif, sans-serif;
+
+  /* Brand */
+  --color-brand-50: #eef5f3;
+  --color-brand-100: #dceeea;
+  --color-brand-200: #b9dbd4;
+  --color-brand-300: #8bc0b5;
+  --color-brand-400: #4f9789;
+  --color-brand-500: #0d655b;
+  --color-brand-600: #0a544c;
+  --color-brand-700: #08423c;
+  --color-brand-800: #06312d;
+  --color-brand-900: #042320;
+
+  /* Neutrals — surfaces, text, borders */
+  --color-ink: #12211f;
+  --color-muted: #687a76;
+  --color-line: #dfe6e4;
+  --color-line-strong: #c7d3d0;
+  --color-surface: #ffffff;
+  --color-canvas: #f5f8f7;
+  --color-subtle: #fafbfb;
+
+  /* Status */
+  --color-ok-50: #edf7f2;
+  --color-ok-500: #197053;
+  --color-warn-50: #fdf5e9;
+  --color-warn-500: #a9691a;
+  --color-danger-50: #fdf1f1;
+  --color-danger-500: #a13e3e;
+  --color-info-50: #eef3f9;
+  --color-info-500: #2f5c8a;
+
+  /* Layout */
+  --spacing-sidebar: 264px;
+  --spacing-topbar: 60px;
+}
+
+/* =========================================================================
+   Global motion kill switch — the UI is deliberately static.
+   ========================================================================= */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    /* Global type/spacing knob. 15px (vs the 16px browser default) shrinks
+       every rem-based utility — headings, small text, gaps and padding — by
+       a denser, more corporate feel. Tune this single value to scale the
+       whole UI up or down — every rem-based size follows it. */
+    font-size: 14px;
+  }
+
+  body {
+    @apply m-0 min-w-[320px] bg-canvas text-sm leading-relaxed text-ink antialiased;
+    font-family: var(--font-sans);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply mt-0 font-semibold tracking-normal text-ink;
+    font-family: var(--font-display);
+  }
+
+  h1 { @apply text-xl; }
+  h2 { @apply text-lg; }
+  h3 { @apply text-sm; }
+
+  p { @apply mt-0; }
+
+  button {
+    @apply cursor-pointer border-0 bg-transparent p-0;
+    font: inherit;
+    color: inherit;
+  }
+
+  button:disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
+
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  /* One consistent focus ring across the whole app */
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand-500;
+  }
+
+  ::placeholder {
+    @apply text-muted/70;
+  }
+}
+
+/* =========================================================================
+   Primitives — the shared vocabulary. Pages compose these plus utilities.
+   ========================================================================= */
+@layer components {
+  /* ---- Buttons --------------------------------------------------------- */
+  .btn {
+    @apply inline-flex h-9 items-center justify-center gap-2 rounded border px-3.5
+           text-sm font-semibold whitespace-nowrap select-none;
+  }
+  .btn-primary {
+    @apply border-brand-800 bg-brand-800 text-white hover:bg-brand-700;
+  }
+  .btn-secondary {
+    @apply border-line bg-white text-ink hover:bg-canvas;
+  }
+  .btn-ghost {
+    @apply border-transparent bg-transparent text-muted hover:bg-canvas hover:text-ink;
+  }
+  .btn-danger {
+    @apply border-danger-500/25 bg-danger-50 text-danger-500 hover:bg-danger-50/70;
+  }
+  .btn-icon {
+    @apply inline-grid h-9 w-9 place-items-center rounded border border-line
+           bg-white text-muted hover:bg-canvas hover:text-ink;
+  }
+  .btn-sm {
+    @apply h-8 px-2.5 text-xs;
+  }
+
+  /* ---- Form controls --------------------------------------------------- */
+  .field {
+    @apply mb-4 flex flex-col gap-1.5;
+  }
+  .label {
+    @apply text-xs font-semibold text-ink;
+  }
+  .input,
+  .select,
+  .textarea {
+    @apply w-full rounded border border-line bg-white px-3 text-sm text-ink
+           outline-none hover:border-line-strong focus:border-brand-500
+           disabled:bg-canvas disabled:text-muted;
+  }
+  .input,
+  .select {
+    @apply h-9;
+  }
+  .textarea {
+    @apply min-h-24 resize-y py-2 leading-relaxed;
+  }
+  .hint {
+    @apply text-xs text-muted;
+  }
+  .error-text {
+    @apply text-xs font-medium text-danger-500;
+  }
+
+  /* ---- Surfaces -------------------------------------------------------- */
+  .card {
+    @apply rounded border border-line bg-surface;
+  }
+  .card-head {
+    @apply flex flex-wrap items-center justify-between gap-3 border-b border-line px-4 py-3;
+  }
+  .card-body {
+    @apply p-4;
+  }
+  .panel {
+    @apply rounded border border-line bg-surface p-4;
+  }
+
+  /* ---- Page scaffolding ------------------------------------------------ */
+  .page {
+    @apply mx-auto flex w-full max-w-[1400px] flex-col gap-4 p-4 lg:p-6;
+  }
+  .page-header {
+    @apply flex flex-wrap items-end justify-between gap-3;
+  }
+  .page-title {
+    @apply text-lg font-semibold text-ink;
+    font-family: var(--font-display);
+  }
+  .page-subtitle {
+    @apply text-sm text-muted;
+  }
+  .eyebrow {
+    @apply text-[11px] font-bold tracking-wide text-brand-500 uppercase;
+  }
+  .section-title {
+    @apply text-sm font-semibold text-ink;
+    font-family: var(--font-display);
+  }
+
+  /* ---- Tables ---------------------------------------------------------- */
+  .table-wrap {
+    @apply w-full overflow-x-auto rounded border border-line bg-surface;
+  }
+  .table {
+    @apply w-full border-collapse text-sm;
+  }
+  .table thead th {
+    @apply border-b border-line bg-subtle px-3 py-2.5 text-start text-xs
+           font-semibold whitespace-nowrap text-muted;
+  }
+  .table tbody td {
+    @apply border-b border-line px-3 py-2.5 text-start align-middle text-ink;
+  }
+  .table tbody tr:last-child td {
+    @apply border-b-0;
+  }
+  .table tbody tr:hover {
+    @apply bg-subtle;
+  }
+
+  /* ---- Scroll ---------------------------------------------------------- */
+  /* عنصر يمرّر أفقياً دون إظهار شريطه — يستعمل عندما يقود العنصرَ شريطٌ آخر. */
+  .scroll-hidden {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scroll-hidden::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ---- Badges ---------------------------------------------------------- */
+  .badge {
+    @apply inline-flex items-center gap-1.5 rounded border px-2 py-0.5
+           text-[11px] font-semibold whitespace-nowrap;
+  }
+  .badge-neutral { @apply border-line bg-canvas text-muted; }
+  .badge-brand   { @apply border-brand-200 bg-brand-50 text-brand-600; }
+  .badge-ok      { @apply border-ok-500/20 bg-ok-50 text-ok-500; }
+  .badge-warn    { @apply border-warn-500/20 bg-warn-50 text-warn-500; }
+  .badge-danger  { @apply border-danger-500/20 bg-danger-50 text-danger-500; }
+  .badge-info    { @apply border-info-500/20 bg-info-50 text-info-500; }
+
+  /* ---- Overlays -------------------------------------------------------- */
+  .overlay {
+    @apply fixed inset-0 z-50 bg-brand-900/40 p-4;
+  }
+  .modal {
+    @apply mx-auto flex max-h-[90vh] w-full max-w-2xl flex-col
+           rounded border border-line bg-surface;
+  }
+  .modal-head {
+    @apply flex items-center justify-between gap-3 border-b border-line px-4 py-3;
+  }
+  .modal-body {
+    @apply flex-1 overflow-y-auto p-4;
+  }
+  .modal-foot {
+    @apply flex items-center justify-end gap-2 border-t border-line px-4 py-3;
+  }
+  .drawer {
+    @apply fixed inset-y-0 end-0 z-50 flex w-full max-w-xl flex-col
+           border-s border-line bg-surface;
+  }
+
+  /* ---- Misc ------------------------------------------------------------ */
+  .empty-state {
+    @apply flex flex-col items-center justify-center gap-2 rounded border
+           border-dashed border-line bg-subtle px-4 py-10 text-center text-sm text-muted;
+  }
+  .divider {
+    @apply border-t border-line;
+  }
+  .muted {
+    @apply text-muted;
+  }
+  .stat-grid {
+    @apply grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4;
+  }
+}

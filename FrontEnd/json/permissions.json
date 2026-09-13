@@ -1,0 +1,90 @@
+{
+  "reports": {
+    "labelKey": "reports",
+    "permissions": [
+      "reports.view",
+      "reports.create",
+      "reports.update.returned",
+      "reports.transition",
+      "reports.export.personal",
+      "reports.export.department",
+      "reports.export.branch"
+    ]
+  },
+  "notifications": {
+    "labelKey": "notifications",
+    "permissions": ["notifications.view"]
+  },
+  "tasks": {
+    "labelKey": "navTasks",
+    "permissions": [
+      "tasks.create",
+      "tasks.update",
+      "tasks.delete_with_activities",
+      "tasks.review",
+      "tasks.statistics.view"
+    ]
+  },
+  "organization": {
+    "labelKey": "organization",
+    "permissions": [
+      "organization.view",
+      "organization.tree.manage",
+      "branches.create",
+      "branches.update",
+      "branches.delete",
+      "departments.create",
+      "departments.update",
+      "departments.delete"
+    ]
+  },
+  "communications": {
+    "labelKey": "messages",
+    "permissions": [
+      "messages.view",
+      "messages.create",
+      "messages.reply",
+      "formal_correspondences.view",
+      "formal_correspondences.create",
+      "formal_correspondences.route",
+      "formal_correspondences.delete",
+      "circulars.view",
+      "circulars.create"
+    ]
+  },
+  "offices": {
+    "labelKey": "offices",
+    "permissions": ["offices.manage"]
+  },
+  "employees": {
+    "labelKey": "employees",
+    "permissions": [
+      "employees.view",
+      "employees.create",
+      "employees.update",
+      "employees.delete"
+    ]
+  },
+  "forms": {
+    "labelKey": "customForms",
+    "permissions": [
+      "forms.view",
+      "forms.publish",
+      "forms.submissions.view",
+      "forms.export",
+      "forms.manage"
+    ]
+  },
+  "hr": {
+    "labelKey": "navHr",
+    "permissions": ["hr.view", "hr.manage", "hr.request", "hr.approve"]
+  },
+  "database": {
+    "labelKey": "databaseCenter",
+    "permissions": ["database.backups.manage", "database.maintenance.manage"]
+  },
+  "roles": {
+    "labelKey": "rolePermissions",
+    "permissions": ["roles.permissions.manage"]
+  }
+}
