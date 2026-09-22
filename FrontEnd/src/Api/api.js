@@ -304,6 +304,20 @@ const administrationApi = {
     }),
   downloadDatabaseBackup: (fileName) =>
     requestBlob(`/database-backups/${fileName}/download`),
+  documentTemplates: () => request("/document-templates"),
+  downloadDocumentTemplate: (key) =>
+    requestBlob(`/document-templates/${key}/download`),
+  downloadBlankTemplate: (key) => requestBlob(`/document-templates/${key}/blank`),
+  uploadDocumentTemplate: (key, file, force = false) =>
+    request(`/document-templates/${key}`, {
+      method: "POST",
+      body: toFormData({ template: file, force: force ? 1 : 0 }),
+    }),
+  restoreDocumentTemplate: (key, backup) =>
+    request(`/document-templates/${key}/restore`, {
+      method: "POST",
+      body: JSON.stringify({ backup }),
+    }),
   deleteDatabaseBackup: (fileName) =>
     request(`/database-backups/${encodeURIComponent(fileName)}`, {
       method: "DELETE",

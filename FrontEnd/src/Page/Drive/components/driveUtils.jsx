@@ -13,14 +13,7 @@ export function matchesFilter(ownerId, scope, filter, userId) {
     (filter === "task" && scope === "task")
   );
 }
-export function downloadBlob(blob, name) {
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = name;
-  link.click();
-  URL.revokeObjectURL(url);
-}
+export { downloadBlob } from "../../../utils/download";
 export function formatSize(size) {
   if (size == null) return "غير محدودة";
   if (size < 1024) return `${size} B`;

@@ -32,8 +32,14 @@ export async function request(path, options = {}) {
     const data = await response.json().catch(() => ({}));
     if (response.status === 413)
         throw new Error(tr('api_payloadTooLarge'));
-    if (!response.ok)
-        throw new Error(data.message || fallbackMessage());
+    if (!response.ok) {
+        // جسم الرد يُرفق بالخطأ: بعض الردود تحمل تفاصيل تحتاجها الشاشة
+        // (حقول ناقصة مثلاً) لا رسالةً فقط.
+        const error = new Error(data.message || fallbackMessage());
+        error.status = response.status;
+        error.data = data;
+        throw error;
+    }
     return data;
 }
 export async function requestBlob(path, options = {}) {

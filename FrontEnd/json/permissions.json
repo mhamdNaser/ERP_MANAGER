@@ -87,6 +87,10 @@
     "labelKey": "databaseCenter",
     "permissions": ["database.backups.manage", "database.maintenance.manage"]
   },
+  "templates": {
+    "labelKey": "navDocumentTemplates",
+    "permissions": ["templates.manage"]
+  },
   "roles": {
     "labelKey": "rolePermissions",
     "permissions": ["roles.permissions.manage"]

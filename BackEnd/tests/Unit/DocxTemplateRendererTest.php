@@ -24,6 +24,8 @@ it('fills split Word placeholders from the formal correspondence template', func
         'target' => 'إلى السيد مدير الاختبار',
         'signer_name' => 'مستخدم اختبار',
         'signer_role' => 'صفة اختبار',
+        // بلا صورة توقيع يُفرَّغ مكانها، كما تفعل FormalDocumentService.
+        'signature' => '',
     ], [
         'qr_code' => $qr,
     ]);

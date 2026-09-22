@@ -19,4 +19,5 @@ return [
     App\Modules\Fleet\Providers\FleetServiceProvider::class,
     App\Modules\Drive\Providers\DriveServiceProvider::class,
     App\Modules\Database\Providers\DatabaseServiceProvider::class,
+    App\Modules\Templates\Providers\TemplatesServiceProvider::class,
 ];

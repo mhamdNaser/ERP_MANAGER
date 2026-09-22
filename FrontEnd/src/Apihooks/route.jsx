@@ -15,6 +15,7 @@ export const tabRouteIds = [
   "forms",
   "offices",
   "database",
+  "document-templates",
   "hr-requests",
   "hr",
   "fleet",

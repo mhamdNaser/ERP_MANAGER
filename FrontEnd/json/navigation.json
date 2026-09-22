@@ -93,6 +93,13 @@
     "section": "navSectionAdmin"
   },
   {
+    "id": "document-templates",
+    "labelKey": "navDocumentTemplates",
+    "icon": "FileStack",
+    "permission": "templates.manage",
+    "section": "navSectionAdmin"
+  },
+  {
     "id": "org-tree",
     "labelKey": "navOrgTree",
     "icon": "Landmark",

@@ -1,14 +1,5 @@
 import { useEffect, useState } from "react";
-import { api } from "../../lib";
-
-function downloadBlob(blob, fileName) {
-  const url = URL.createObjectURL(blob);
-  const anchor = document.createElement("a");
-  anchor.href = url;
-  anchor.download = fileName;
-  anchor.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1200);
-}
+import { api, downloadBlob } from "../../lib";
 
 export function useDatabaseManager({ t, notify, confirm, canMaintain, canImport }) {
   const [backups, setBackups] = useState([]);

@@ -4,6 +4,10 @@ return [
     'libreoffice_binary' => env('LIBREOFFICE_BINARY', '/snap/bin/libreoffice'),
     'local_word_pdf_fallback' => env('LOCAL_WORD_PDF_FALLBACK', true),
 
+    // النسخ السابقة من القوالب المستبدَلة — مجلد قابل للضبط كي تعمل الاختبارات
+    // على مجلد مؤقت بدل الكتابة فوق قوالب المؤسسة.
+    'backups_path' => env('DOCUMENT_TEMPLATE_BACKUPS', resource_path('templates/backups')),
+
     'qr' => [
         'logo_path' => env('QR_LOGO_PATH', base_path('../FrontEnd/src/assets/logo.jpg')),
         'brand_text' => env('QR_BRAND_TEXT', 'CND'),
@@ -28,6 +32,10 @@ return [
 
     'hr' => [
         'request_approval' => resource_path('templates/documents/hr/request-approval.docx'),
+
+        // النموذجان الرسميان للإجازات. الأصل الورقي الفارغ بجانبهما في blank/.
+        'leave_request' => resource_path('templates/documents/hr/leave-request.docx'),
+        'hourly_leave_request' => resource_path('templates/documents/hr/hourly-leave-request.docx'),
     ],
 
     'fleet' => [

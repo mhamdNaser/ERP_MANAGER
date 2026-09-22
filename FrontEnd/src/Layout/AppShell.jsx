@@ -9,6 +9,7 @@ import {
   Database,
   FileInput,
   FilePlus2,
+  FileStack,
   FileText,
   HardDrive,
   KanbanSquare,
@@ -64,6 +65,7 @@ import { FormalCorrespondencesPage } from "../Page/FormalCorrespondences";
 import { CircularsPage } from "../Page/Circulars";
 import { OfficesPage } from "../Page/Offices";
 import { EmployeesPage } from "../Page/Employees";
+import { DocumentTemplatesPage } from "../Page/DocumentTemplates";
 import { FleetPage } from "../Page/Fleet";
 import { HrPage } from "../Page/Hr";
 import { HrMyRequestsPage } from "../Page/HrRequests";
@@ -452,6 +454,7 @@ export function AppShell({ user, exit }) {
           {view === "employees" && <EmployeesPage notify={notify} />}
           {view === "hr" && <HrPage notify={notify} />}
           {view === "fleet" && <FleetPage user={user} notify={notify} />}
+          {view === "document-templates" && <DocumentTemplatesPage notify={notify} />}
           {view === "hr-requests" && <HrMyRequestsPage user={user} notify={notify} />}
           {view === "profile" && <MyProfilePage user={user} notify={notify} />}
           {view === "guide" && <UserGuidePage />}
@@ -567,6 +570,7 @@ const icons = {
   Database,
   FileInput,
   FilePlus2,
+  FileStack,
   FileText,
   HardDrive,
   KanbanSquare,

@@ -25,8 +25,8 @@ class HrDocumentService
 
     public function generate(HrRequest $request, ?User $signer): void
     {
-        $template = config('document_templates.hr.request_approval');
-        if (! $template || ! is_file($template)) {
+        $template = $this->template($request);
+        if (! $template) {
             return;
         }
 
@@ -72,6 +72,29 @@ class HrDocumentService
         ])->save();
     }
 
+    /**
+     * الإجازة والمغادرة تُطبعان على نموذجَي القسم الرسميين، وما عداهما
+     * على كتاب الاعتماد العام. وإن غاب النموذج الخاص حلّ العام محلّه،
+     * فلا يتعطّل الاعتماد لأن ملفاً لم يُرفع بعد.
+     */
+    private function template(HrRequest $request): ?string
+    {
+        $candidates = match ($request->type) {
+            'leave' => ['hr.leave_request', 'hr.request_approval'],
+            'departure' => ['hr.hourly_leave_request', 'hr.request_approval'],
+            default => ['hr.request_approval'],
+        };
+
+        foreach ($candidates as $key) {
+            $path = config('document_templates.' . $key);
+            if ($path && is_file($path)) {
+                return $path;
+            }
+        }
+
+        return null;
+    }
+
     private function values(HrRequest $request, ?User $signer): array
     {
         $employee = $request->user;
@@ -87,7 +110,26 @@ class HrDocumentService
             'status' => 'موافقة نهائية بتاريخ ' . ($request->decided_at?->format('Y/m/d') ?: now()->format('Y/m/d')),
             'signer_name' => $signer?->name ?: '',
             'signer_role' => $signer?->job_title ?: 'المدير العام',
+
+            // حقول نموذجَي الإجازة الورقيين. القالب يأخذ ما يعنيه ويتجاهل الباقي.
+            'employee_name' => $employee?->name ?: '',
+            'job_title' => $employee?->job_title ?: '',
+            'employee_number' => $employee?->employee_number ?: '',
+            'days' => $request->days ? $this->number($request->days) : '',
+            'hours' => $request->hours ? $this->number($request->hours) : '',
+            'reason' => $request->reason ?: '',
+            'start_date' => $request->start_date?->format('Y/m/d') ?: '',
+            'end_date' => $request->end_date?->format('Y/m/d') ?: $request->start_date?->format('Y/m/d') ?: '',
+            'date' => $request->start_date?->format('Y/m/d') ?: now()->format('Y/m/d'),
+            'start_time' => $request->start_time ? substr((string) $request->start_time, 0, 5) : '',
+            'end_time' => $request->end_time ? substr((string) $request->end_time, 0, 5) : '',
         ];
+    }
+
+    /** «3» لا «3.0»، و«1.5» تبقى كما هي. */
+    private function number(float $value): string
+    {
+        return rtrim(rtrim(number_format($value, 1), '0'), '.');
     }
 
     private function body(HrRequest $request, ?User $employee): string
@@ -101,7 +143,7 @@ class HrDocumentService
         if ($request->start_date) {
             $lines[] = 'من تاريخ ' . $request->start_date->format('Y/m/d')
                 . ' إلى تاريخ ' . ($request->end_date?->format('Y/m/d') ?: $request->start_date->format('Y/m/d'))
-                . ($request->days ? ' (' . rtrim(rtrim(number_format($request->days, 1), '0'), '.') . ' يوم)' : '');
+                . ($request->days ? ' (' . $this->number($request->days) . ' يوم)' : '');
         }
 
         if ($request->start_time) {

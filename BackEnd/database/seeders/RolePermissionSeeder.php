@@ -65,6 +65,7 @@ class RolePermissionSeeder extends Seeder
             'fleet.manage',
             'fleet.request',
             'fleet.approve',
+            'templates.manage',
         ];
 
         foreach ($permissions as $permission) {
@@ -225,6 +226,7 @@ class RolePermissionSeeder extends Seeder
                 'reports.export.branch',
                 'database.backups.manage',
                 'database.maintenance.manage',
+                'templates.manage',
                 'forms.manage',
                 'forms.view',
                 'forms.publish',
