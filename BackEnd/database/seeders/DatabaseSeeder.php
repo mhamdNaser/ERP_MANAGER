@@ -171,6 +171,7 @@ class DatabaseSeeder extends Seeder
         $this->seedForms($users, $branchDamascus, $branchAleppo, $departmentInfra, $departmentSupport);
         $this->call(FormalCorrespondenceSeeder::class);
         $this->call(HrSeeder::class);
+        $this->call(FleetSeeder::class);
         $this->call(TaskSeeder::class);
         $this->call(DashboardTimelineSeeder::class);
         $this->call(TaskActivitySeeder::class);

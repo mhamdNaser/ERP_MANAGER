@@ -30,6 +30,10 @@ return [
         'request_approval' => resource_path('templates/documents/hr/request-approval.docx'),
     ],
 
+    'fleet' => [
+        'mission_approval' => resource_path('templates/documents/fleet/mission-approval.docx'),
+    ],
+
     'messages' => [
         'message_export' => resource_path('templates/documents/messages/message-export.docx'),
     ],

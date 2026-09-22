@@ -230,6 +230,19 @@ const organizationApi = {
     request(`/hr/requests/${id}/cancel`, { method: "POST" }),
   updateHrBalance: (employeeId, data) =>
     request(`/hr/balances/${employeeId}`, { method: "PUT", body: JSON.stringify(data) }),
+  myFleetMissions: () => request("/fleet/my-missions"),
+  fleetMissions: (params = {}) => {
+    const query = new URLSearchParams(
+      Object.entries(params).filter(([, value]) => value !== "" && value != null),
+    ).toString();
+    return request(`/fleet/missions${query ? `?${query}` : ""}`);
+  },
+  createFleetMission: (data) =>
+    request("/fleet/missions", { method: "POST", body: toFormData(data) }),
+  decideFleetMission: (id, data) =>
+    request(`/fleet/missions/${id}/decision`, { method: "POST", body: JSON.stringify(data) }),
+  cancelFleetMission: (id) =>
+    request(`/fleet/missions/${id}/cancel`, { method: "POST" }),
   employees: () => request("/employees"),
   saveEmployee: (data, id) =>
     request(id ? `/employees/${id}` : "/employees", {

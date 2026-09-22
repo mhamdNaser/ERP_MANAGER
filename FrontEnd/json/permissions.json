@@ -79,6 +79,10 @@
     "labelKey": "navHr",
     "permissions": ["hr.view", "hr.manage", "hr.request", "hr.approve"]
   },
+  "fleet": {
+    "labelKey": "navFleet",
+    "permissions": ["fleet.view", "fleet.manage", "fleet.request", "fleet.approve"]
+  },
   "database": {
     "labelKey": "databaseCenter",
     "permissions": ["database.backups.manage", "database.maintenance.manage"]

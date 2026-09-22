@@ -61,6 +61,10 @@ class RolePermissionSeeder extends Seeder
             'hr.manage',
             'hr.request',
             'hr.approve',
+            'fleet.view',
+            'fleet.manage',
+            'fleet.request',
+            'fleet.approve',
         ];
 
         foreach ($permissions as $permission) {
@@ -69,6 +73,8 @@ class RolePermissionSeeder extends Seeder
 
         $roles = [
             'employee' => [
+                'hr.request',
+                'fleet.request',
                 'reports.view',
                 'reports.create',
                 'reports.update.returned',
@@ -86,6 +92,8 @@ class RolePermissionSeeder extends Seeder
                 'forms.submissions.view',
             ],
             'technician' => [
+                'hr.request',
+                'fleet.request',
                 'reports.view',
                 'reports.create',
                 'reports.update.returned',
@@ -103,6 +111,8 @@ class RolePermissionSeeder extends Seeder
                 'forms.submissions.view',
             ],
             'department_head' => [
+                'hr.request',
+                'fleet.request',
                 'tasks.create',
                 'tasks.update',
                 'tasks.delete_with_activities',
@@ -129,6 +139,8 @@ class RolePermissionSeeder extends Seeder
                 'forms.export',
             ],
             'branch_manager' => [
+                'hr.request',
+                'fleet.request',
                 'tasks.create',
                 'tasks.update',
                 'tasks.delete_with_activities',
@@ -160,6 +172,10 @@ class RolePermissionSeeder extends Seeder
                 'forms.export',
             ],
             'general_manager' => [
+                'hr.view',
+                'hr.request',
+                'fleet.view',
+                'fleet.request',
                 'tasks.create',
                 'tasks.update',
                 'tasks.delete_with_activities',
@@ -196,6 +212,8 @@ class RolePermissionSeeder extends Seeder
                 'forms.export',
             ],
             'database_manager' => [
+                'hr.request',
+                'fleet.request',
                 'tasks.create',
                 'tasks.update',
                 'tasks.delete_with_activities',

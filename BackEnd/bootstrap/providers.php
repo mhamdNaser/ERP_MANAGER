@@ -16,6 +16,7 @@ return [
     App\Modules\Tasks\Providers\TasksServiceProvider::class,
     App\Modules\Forms\Providers\FormsServiceProvider::class,
     App\Modules\Hr\Providers\HrServiceProvider::class,
+    App\Modules\Fleet\Providers\FleetServiceProvider::class,
     App\Modules\Drive\Providers\DriveServiceProvider::class,
     App\Modules\Database\Providers\DatabaseServiceProvider::class,
 ];

@@ -19,6 +19,7 @@ import {
   Megaphone,
   Menu,
   ShieldCheck,
+  Truck,
   UserRound,
   Users,
   X,
@@ -63,6 +64,7 @@ import { FormalCorrespondencesPage } from "../Page/FormalCorrespondences";
 import { CircularsPage } from "../Page/Circulars";
 import { OfficesPage } from "../Page/Offices";
 import { EmployeesPage } from "../Page/Employees";
+import { FleetPage } from "../Page/Fleet";
 import { HrPage } from "../Page/Hr";
 import { HrMyRequestsPage } from "../Page/HrRequests";
 import { MyProfilePage } from "../Page/Profile";
@@ -234,7 +236,7 @@ export function AppShell({ user, exit }) {
         </div>
         <nav
           data-guide="actions"
-          className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-2 py-3"
+          className="scroll-dark flex flex-1 flex-col gap-0.5 overflow-y-auto px-2 py-3"
         >
           {nav.map(([id, label, Icon, section], index) => (
             <Fragment key={id}>
@@ -449,6 +451,7 @@ export function AppShell({ user, exit }) {
           )}
           {view === "employees" && <EmployeesPage notify={notify} />}
           {view === "hr" && <HrPage notify={notify} />}
+          {view === "fleet" && <FleetPage user={user} notify={notify} />}
           {view === "hr-requests" && <HrMyRequestsPage user={user} notify={notify} />}
           {view === "profile" && <MyProfilePage user={user} notify={notify} />}
           {view === "guide" && <UserGuidePage />}
@@ -572,6 +575,7 @@ const icons = {
   Mail,
   Megaphone,
   ShieldCheck,
+  Truck,
   UserRound,
   Users,
 };

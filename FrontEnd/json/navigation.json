@@ -110,6 +110,14 @@
     "section": "navSectionAdmin"
   },
   {
+    "id": "fleet",
+    "labelKey": "navFleet",
+    "icon": "Truck",
+    "permission": "fleet.request",
+    "fallbackPermission": "fleet.view",
+    "section": "navSectionAdmin"
+  },
+  {
     "id": "employees",
     "labelKey": "employees",
     "icon": "Users",
