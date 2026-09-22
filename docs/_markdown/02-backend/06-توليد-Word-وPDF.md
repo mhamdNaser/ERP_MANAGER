@@ -218,7 +218,7 @@ private function fileUrl(?string $path): ?string
 | المجلد | الملفات |
 | --- | --- |
 | `formal-correspondences/` | `stage-internal-letter.docx` (الأهم)، `stage-external-reply.docx`، `stage-study-report.docx`، `stage-execution-report.docx` |
-| `hr/` | `request-approval.docx` |
+| `hr/` | `request-approval.docx`، `leave-request.docx`، `hourly-leave-request.docx`، و`blank/` للأصلين الورقيين الفارغين |
 | `messages/` | `message-export.docx` |
 | `reports/` | `approved-report.docx` |
 | `custom-forms/` | `submission-export.docx` |
@@ -250,11 +250,14 @@ if (! $template || ! is_file($template)) return;    // لا وثيقة، لا خ
 
 ### تعديل قالب — الإجراء الصحيح
 
-1. **خذ نسخة احتياطية** في `BackEnd/resources/templates/backups/`.
-2. افتح القالب في Word وعدّل التنسيق.
-3. اكتب المتغيرات كنص عادي بتنسيق موحّد.
-4. احفظ بصيغة `.docx` (لا `.doc` ولا `.dotx`).
-5. جرّب توليد وثيقة واحدة وافحص النتيجة.
+منذ الإصدار 1.1.0 لا تلمس الملفات على الخادم: استعمل تبويب **قوالب الوثائق**
+(صلاحية `templates.manage`) — [05-modules/15](../05-modules/15-قوالب-الوثائق.md).
+
+1. نزّل القالب الحالي من التبويب.
+2. عدّله في Word، واكتب المتغيرات كنص عادي بتنسيق موحّد.
+3. احفظ بصيغة `.docx` (لا `.doc` ولا `.dotx`).
+4. ارفعه من التبويب: النسخة السابقة تُؤرشَف تلقائياً، وأي حقل ناقص يُنبَّه عليه قبل القبول.
+5. جرّب توليد وثيقة واحدة وافحص النتيجة. لو ساءت، أعد النسخة السابقة من التبويب.
 
 > **الوثائق المولّدة سابقاً لا تتغيّر تلقائياً.** لتحديثها افتح تفاصيل الكتاب
 > واضغط "حفظ التعديلات وإعادة التوليد".

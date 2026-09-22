@@ -349,6 +349,30 @@ attachment                  (اختياري، ≤20MB)
 
 ---
 
+## Templates — قوالب الوثائق
+
+`Modules/Templates/Routes/api.php` — جميعها `templates.manage`
+
+| الطريقة | المسار | الدالة |
+| --- | --- | --- |
+| GET | `/document-templates` | `index` — كل القوالب مع حقولها ونسخها السابقة |
+| GET | `/document-templates/{key}/download` | `download` — القالب الحالي |
+| GET | `/document-templates/{key}/blank` | `blank` — الأصل الورقي الفارغ إن وُجد |
+| POST | `/document-templates/{key}` | `upload` — **multipart**: `template` (docx ≤20MB)، `force` |
+| POST | `/document-templates/{key}/restore` | `restore` — `{ "backup": "2026-09-22_101500.docx" }` |
+
+`{key}` بصيغة `مجموعة.اسم` مثل `hr.leave_request`، مقيَّدة بـ`[a-z_]+\.[a-z_]+`.
+
+**رفع قالب ناقص الحقول** يعيد 422:
+
+```json
+{ "message": "القالب المرفوع ينقصه 3 حقل.", "missing": ["days", "reason", "start_date"], "requires_force": true }
+```
+
+أعد الرفع بـ`force=1` للقبول رغم النقص. الرفض لا يلمس الملف القائم.
+
+---
+
 ## Database — النسخ الاحتياطي
 
 `Modules/Database/Routes/api.php` — جميعها `database.backups.manage`
