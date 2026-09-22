@@ -39,7 +39,6 @@ export function HrRequestCard({ item, canDecide = false, onDecide, onCancel, onO
             <small className="block text-xs text-muted">{item.user.name}{item.user.job_title ? ` — ${item.user.job_title}` : ""}</small>
           )}
           <small className="block text-xs text-muted">{hrDuration(t, item)}</small>
-          {item.destination && <small className="block text-xs text-muted">{t("hr_destination")}: {item.destination}</small>}
         </div>
         <div className="flex flex-col items-end gap-1">
           <span className={`badge ${hrStatusTone(item.status)}`}>

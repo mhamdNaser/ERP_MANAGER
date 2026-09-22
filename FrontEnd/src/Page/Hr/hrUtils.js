@@ -1,7 +1,6 @@
 export const hrTypeLabelKeys = {
   leave: "hr_typeLeave",
   departure: "hr_typeDeparture",
-  mission: "hr_typeMission",
   document: "hr_typeDocument",
 };
 
@@ -36,9 +35,8 @@ export function hrStatusTone(status) {
 /** الحقول المطلوبة تختلف باختلاف نوع الطلب. */
 export function hrFieldsFor(type) {
   return {
-    dates: type === "leave" || type === "mission",
+    dates: type === "leave",
     times: type === "departure",
-    destination: type === "mission",
     subtype: type === "leave" || type === "document",
   };
 }

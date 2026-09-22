@@ -108,10 +108,6 @@ class HrDocumentService
             $lines[] = 'من الساعة ' . substr($request->start_time, 0, 5) . ' إلى الساعة ' . substr((string) $request->end_time, 0, 5);
         }
 
-        if ($request->destination) {
-            $lines[] = 'الجهة المقصودة: ' . $request->destination;
-        }
-
         $lines[] = '';
         $lines[] = 'السبب: ' . $request->reason;
         $lines[] = '';
@@ -125,7 +121,6 @@ class HrDocumentService
         $type = [
             'leave' => 'إجازة',
             'departure' => 'مغادرة ساعية',
-            'mission' => 'مهمة عمل',
             'document' => 'طلب وثيقة',
         ][$request->type] ?? $request->type;
 

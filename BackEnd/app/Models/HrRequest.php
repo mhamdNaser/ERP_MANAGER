@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 
 class HrRequest extends Model
 {
-    public const TYPES = ['leave', 'departure', 'mission', 'document'];
+    public const TYPES = ['leave', 'departure', 'document'];
 
     /**
      * مسار الاعتماد: من الموظف إلى الموارد البشرية ثم المدير العام.

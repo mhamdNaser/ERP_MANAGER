@@ -9,7 +9,6 @@ export const hr = {
 
     hr_typeLeave: "إجازة",
     hr_typeDeparture: "مغادرة ساعية",
-    hr_typeMission: "مهمة عمل",
     hr_typeDocument: "طلب وثيقة",
     hr_leaveAnnual: "سنوية",
     hr_leaveSick: "مرضية",
@@ -41,7 +40,6 @@ export const hr = {
     hr_endDate: "إلى تاريخ",
     hr_startTime: "ساعة المغادرة",
     hr_endTime: "ساعة العودة",
-    hr_destination: "الجهة المقصودة",
     hr_reason: "السبب",
     hr_attachment: "مرفق",
     hr_submitRequest: "إرسال الطلب",
@@ -96,7 +94,6 @@ export const hr = {
 
     hr_typeLeave: "Leave",
     hr_typeDeparture: "Hourly departure",
-    hr_typeMission: "Work mission",
     hr_typeDocument: "Document request",
     hr_leaveAnnual: "Annual",
     hr_leaveSick: "Sick",
@@ -128,7 +125,6 @@ export const hr = {
     hr_endDate: "To",
     hr_startTime: "Leaving at",
     hr_endTime: "Returning at",
-    hr_destination: "Destination",
     hr_reason: "Reason",
     hr_attachment: "Attachment",
     hr_submitRequest: "Send request",

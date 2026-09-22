@@ -11,7 +11,6 @@ const emptyDraft = () => ({
   end_date: "",
   start_time: "",
   end_time: "",
-  destination: "",
   reason: "",
 });
 
@@ -29,7 +28,6 @@ export function HrRequestModal({ close, done, notify, employees = null, defaultU
     draft.reason.trim() &&
     (!fields.dates || (draft.start_date && draft.end_date)) &&
     (!fields.times || (draft.start_time && draft.end_time)) &&
-    (!fields.destination || draft.destination.trim()) &&
     (!employees || userId);
 
   const submit = async (event) => {
@@ -131,12 +129,6 @@ export function HrRequestModal({ close, done, notify, employees = null, defaultU
                   <input className="input" type="time" value={draft.end_time} onChange={(event) => setDraft({ ...draft, end_time: event.target.value })} />
                 </label>
               </>
-            )}
-            {fields.destination && (
-              <label className="field mb-0 sm:col-span-2">
-                <span className="label">{t("hr_destination")}</span>
-                <input className="input" value={draft.destination} onChange={(event) => setDraft({ ...draft, destination: event.target.value })} />
-              </label>
             )}
             <label className="field mb-0 sm:col-span-2">
               <span className="label">{t("hr_reason")}</span>

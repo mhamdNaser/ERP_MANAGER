@@ -85,8 +85,6 @@ class HrSeeder extends Seeder
              'reason' => 'إجازة مرضية بتقرير طبي.', 'advance' => 1, 'offset' => 2],
             ['email' => 'technician@cnd.local', 'type' => 'departure',
              'reason' => 'مغادرة لمراجعة دائرة حكومية.', 'advance' => 2, 'offset' => 0],
-            ['email' => 'head@cnd.local', 'type' => 'mission', 'destination' => 'فرع حلب',
-             'reason' => 'مهمة فنية لمتابعة تركيب المعدات.', 'advance' => 0, 'offset' => 4],
             ['email' => 'personnel@cnd.local', 'type' => 'document', 'subtype' => 'salary',
              'reason' => 'مطلوبة لتقديمها إلى المصرف.', 'advance' => 3, 'offset' => 0],
         ];
@@ -105,14 +103,13 @@ class HrSeeder extends Seeder
                 'created_by_id' => $employee->id,
                 'type' => $sample['type'],
                 'subtype' => $sample['subtype'] ?? null,
-                'start_date' => in_array($sample['type'], ['leave', 'mission'], true) ? $start->toDateString() : null,
-                'end_date' => in_array($sample['type'], ['leave', 'mission'], true)
+                'start_date' => $sample['type'] === 'leave' ? $start->toDateString() : null,
+                'end_date' => $sample['type'] === 'leave'
                     ? $start->copy()->addDays(max(($sample['days'] ?? 3) - 1, 0))->toDateString() : null,
                 'start_time' => $sample['type'] === 'departure' ? '10:00' : null,
                 'end_time' => $sample['type'] === 'departure' ? '13:00' : null,
                 'days' => $sample['days'] ?? null,
                 'hours' => $sample['type'] === 'departure' ? 3 : null,
-                'destination' => $sample['destination'] ?? null,
                 'reason' => $sample['reason'],
                 'stage' => $stage,
                 'status' => $workflow->statusForStage($stage),
