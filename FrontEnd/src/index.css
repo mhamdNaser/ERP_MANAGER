@@ -108,6 +108,55 @@
   ::placeholder {
     @apply text-muted/70;
   }
+
+  /* -------------------------------------------------------------------------
+     أشرطة التمرير جزء من الثيم لا عنصرٌ من نظام التشغيل: مسارٌ شفاف،
+     وإبهامٌ بلون الحدود القوية يغمق إلى لون النص الثانوي عند المرور،
+     بلا أزرار أسهم ولا خلفية للمسار. الحدّ الشفاف حول الإبهام يصنع حشوةً
+     تُبقيه بعيداً عن حافة المحتوى وتجعله أرفع من مساره.
+     ------------------------------------------------------------------------- */
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--color-line-strong);
+    background-clip: content-box;
+    border: 3px solid transparent;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-muted);
+  }
+
+  /* أزرار الأسهم في طرفي الشريط. سكرول بار Fluent في ويندوز يتجاهل
+     display وحده، فتُصفَّر أبعادها معه. */
+  ::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  /* مربّع الزاوية حين يجتمع تمريران، يبقى شفافاً لا رمادياً. */
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  /* فايرفوكس لا يعرف ::-webkit-scrollbar، فيأخذ اللون بالخصائص المعيارية.
+     تُعزَل داخل @supports عمداً: تحديد scrollbar-color في كروم يُحوّله إلى
+     الشريط المعياري ويُلغي قواعد ::-webkit-scrollbar أعلاه بالكامل. */
+  @supports not selector(::-webkit-scrollbar) {
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-line-strong) transparent;
+    }
+  }
 }
 
 /* =========================================================================
@@ -232,6 +281,20 @@
   }
   .scroll-hidden::-webkit-scrollbar {
     display: none;
+  }
+
+  /* عنصر يمرّر فوق خلفية داكنة — القائمة الجانبية مثلاً. إبهام لون الحدود
+     يختفي على الداكن، فيحلّ محلّه أبيضُ شفاف يتضح عند المرور. */
+  .scroll-dark::-webkit-scrollbar-thumb {
+    background-color: rgb(255 255 255 / 0.28);
+  }
+  .scroll-dark::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(255 255 255 / 0.45);
+  }
+  @supports not selector(::-webkit-scrollbar) {
+    .scroll-dark {
+      scrollbar-color: rgb(255 255 255 / 0.28) transparent;
+    }
   }
 
   /* ---- Badges ---------------------------------------------------------- */

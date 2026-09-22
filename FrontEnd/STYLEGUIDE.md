@@ -47,6 +47,9 @@ Defined in `@layer components` in `src/index.css`. Compose them with utilities.
 - Badges: `badge badge-neutral|brand|ok|warn|danger|info`.
 - Overlays: `overlay` (backdrop), `modal`, `modal-head`, `modal-body`,
   `modal-foot`, `drawer`.
+- Scroll: styled globally (thin, transparent track, `line-strong` thumb) — no
+  class needed. `scroll-dark` for a pane over a dark background,
+  `scroll-hidden` when another control drives the scrolling.
 - Misc: `empty-state`, `divider`, `muted`, `stat-grid`.
 
 ## Typography scale
