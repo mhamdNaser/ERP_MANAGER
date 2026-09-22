@@ -347,8 +347,7 @@
 │ hr_requests                      │
 │ id, reference_code (unique)      │
 │ user_id, created_by_id           │
-│ type   leave|departure|          │
-│        mission|document          │
+│ type   leave|departure|document  │
 │ subtype annual|sick|unpaid       │
 │         employment|salary        │
 │ start_date, end_date             │

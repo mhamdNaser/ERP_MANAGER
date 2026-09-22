@@ -291,11 +291,10 @@ php artisan route:list --path=api
 **إنشاء طلب** — **multipart** (يقبل `attachment`):
 
 ```
-type=leave|departure|mission|document
+type=leave|departure|document
 subtype=annual|sick|unpaid|employment|salary
-start_date, end_date        (leave, mission)
+start_date, end_date        (leave)
 start_time, end_time        (departure)
-destination                 (mission)
 reason                      (إلزامي)
 user_id                     (اختياري — HR فقط)
 attachment                  (اختياري، ≤20MB)
@@ -304,6 +303,38 @@ attachment                  (اختياري، ≤20MB)
 **القرار** — `{ "action": "approve|reject", "note": "..." }`
 
 **الرصيد** — `{ "annual_entitlement": 30, "used_days": 5 }`
+
+> `mission` لم يعد نوعاً هنا منذ 1.0.0 — انظر قسم Fleet أدناه.
+
+---
+
+## Fleet — فرع الآليات
+
+`Modules/Fleet/Routes/api.php`
+
+| الطريقة | المسار | الصلاحية | الدالة |
+| --- | --- | --- | --- |
+| GET | `/fleet/my-missions` | — | `mine` — مهام الطالب + `is_fleet_staff` |
+| POST | `/fleet/missions` | `fleet.request` | `store` |
+| POST | `/fleet/missions/{fleetMission}/decision` | — | `decide` |
+| POST | `/fleet/missions/{fleetMission}/cancel` | — | `cancel` |
+| GET | `/fleet/missions` | `fleet.view` | `index` — فلاتر `status`, `user_id` |
+
+**إنشاء مهمة** — **multipart** (يقبل `attachment`):
+
+```
+start_date, end_date        (إلزاميان)
+destination                 (إلزامي، ≤180 حرفاً)
+reason                      (إلزامي، ≤2000 حرف)
+days                        (اختياري — يحسبها الخادم إن غابت)
+user_id                     (اختياري — فرع الآليات فقط)
+attachment                  (اختياري، ≤20MB)
+```
+
+**القرار** — `{ "action": "approve|reject", "note": "..." }`
+
+`GET /fleet/missions` يعيد `missions` و`summary` و`is_fleet_staff`، ويعيد `employees`
+لموظفي الفرع وحدهم. المدير العام يرى `pending_gm` و`approved` و`rejected` فقط.
 
 ---
 
