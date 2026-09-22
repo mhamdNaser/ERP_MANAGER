@@ -196,7 +196,38 @@ it('rejects a backup name that tries to walk out of its folder', function () {
 
     $this->withToken('tpl-manager-escape')
         ->postJson('/api/document-templates/hr.leave_request/restore', ['backup' => '../../../.env'])
-        ->assertStatus(500);
+        ->assertStatus(422)
+        ->assertJsonPath('message', 'اسم النسخة غير صالح.');
+});
+
+/**
+ * سبب الرفض يصل إلى من يرفع القالب، لا «حدث خطأ غير متوقع».
+ * الترويسة Accept مقصودة: بدونها يردّ لارافيل على خطأ التحقق بتحويل 302
+ * لا بـ422 — وهي ترويسة ترسلها طبقة الـAPI في الواجهة دائماً.
+ */
+it('answers a bad upload with the reason, not an opaque failure', function () {
+    templateManager('corrupt');
+    $path = config('document_templates.hr.leave_request');
+    $before = md5_file($path);
+
+    $broken = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'not-really-' . uniqid() . '.docx';
+    file_put_contents($broken, 'PK' . str_repeat('x', 400));   // ليس حزمة docx
+
+    $this->withToken('tpl-manager-corrupt')
+        ->post('/api/document-templates/hr.leave_request', [
+            'template' => new UploadedFile(
+                $broken,
+                'template.docx',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                null,
+                true,
+            ),
+            'force' => 1,
+        ], ['Accept' => 'application/json'])
+        ->assertStatus(422)
+        ->assertJsonPath('errors.template.0', 'القالب يجب أن يكون ملف Word بصيغة docx.');
+
+    expect(md5_file($path))->toBe($before);
 });
 
 it('serves the current template and the blank form', function () {

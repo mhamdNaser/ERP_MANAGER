@@ -8,6 +8,7 @@ use App\Modules\Templates\Services\TemplateRegistry;
 use App\Modules\Templates\Services\TemplateStorage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class DocumentTemplateController extends Controller
@@ -65,7 +66,10 @@ class DocumentTemplateController extends Controller
             ], 422);
         }
 
-        $result = $this->storage->replace($key, $file);
+        $result = $this->attempt(fn () => $this->storage->replace($key, $file));
+        if ($result instanceof JsonResponse) {
+            return $result;
+        }
 
         return response()->json([
             'template' => $this->describe($key),
@@ -82,12 +86,31 @@ class DocumentTemplateController extends Controller
             'backup' => ['required', 'string', 'max:64'],
         ]);
 
-        $result = $this->storage->restore($key, $data['backup']);
+        $result = $this->attempt(fn () => $this->storage->restore($key, $data['backup']));
+        if ($result instanceof JsonResponse) {
+            return $result;
+        }
 
         return response()->json([
             'template' => $this->describe($key),
             'archived' => $result['archived'],
         ]);
+    }
+
+    /**
+     * أخطاء التخزين متوقَّعة ومفهومة (ملف تالف، مجلد لا يُكتب فيه)، فلا تُترك
+     * لمعالج الاستثناءات: على الإنتاج يُخفي رسالتها خلف «حدث خطأ غير متوقع»،
+     * فيرى من يرفع القالب عطلاً بلا سبب. تُعاد الرسالة كما هي مع 422.
+     */
+    private function attempt(callable $action): array|JsonResponse
+    {
+        try {
+            return $action();
+        } catch (RuntimeException $exception) {
+            report($exception);
+
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
     }
 
     private function describe(string $key): array
