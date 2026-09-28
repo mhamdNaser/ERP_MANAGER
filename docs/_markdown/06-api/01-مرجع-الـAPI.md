@@ -76,13 +76,26 @@ php artisan route:list --path=api
 
 | الطريقة | المسار | الصلاحية | الدالة |
 | --- | --- | --- | --- |
-| GET | `/organization` | `organization.view` | `index` |
+| GET | `/organization` | `organization.view` | `index` — القوائم **كاملة** |
+| GET | `/organization/branches` | `organization.view` | `branches` — مرقَّمة، فلاتر `search`, `per_page`, `page` |
+| GET | `/organization/departments` | `organization.view` | `departments` — مرقَّمة، الفلاتر نفسها |
 | POST | `/branches` | `branches.create` | `storeBranch` |
 | PUT | `/branches/{branch}` | `branches.update` | `updateBranch` |
 | DELETE | `/branches/{branch}` | `branches.delete` | `destroyBranch` |
 | POST | `/departments` | `departments.create` | `storeDepartment` |
 | PUT | `/departments/{department}` | `departments.update` | `updateDepartment` |
 | DELETE | `/departments/{department}` | `departments.delete` | `destroyDepartment` |
+
+**القائمة الكاملة مقابل المرقَّمة:** `/organization` يعيد كل الأفرع والأقسام —
+تحتاجها القوائم المنسدلة في نماذج التحرير وشريط فلاتر الموظفين. أما
+`/organization/branches` و`/organization/departments` فللعرض في الشاشة:
+
+```json
+{ "data": [ … ], "meta": { "current_page": 1, "last_page": 4, "per_page": 5, "total": 18 } }
+```
+
+البحث في الأفرع على الاسم والرمز، وفي الأقسام على الاسم والرمز **واسم الفرع**.
+المقارنة غير حسّاسة لحالة الأحرف، و`per_page` مسقوف بـ100.
 
 ---
 
@@ -105,7 +118,7 @@ php artisan route:list --path=api
 
 | الطريقة | المسار | الصلاحية | الدالة |
 | --- | --- | --- | --- |
-| GET | `/employees` | `employees.view` | `index` |
+| GET | `/employees` | `employees.view` | `index` — كاملة، أو مرقَّمة بـ`per_page` |
 | POST | `/employees` | `employees.create` | `store` |
 | PUT | `/employees/{employee}` | `employees.update` | `update` |
 | PUT | `/employees/{employee}/password` | `employees.update` | `updatePassword` |
@@ -113,6 +126,20 @@ php artisan route:list --path=api
 | GET | `/profile/details` | — | `profile` |
 | PUT | `/profile/details` | — | `updateProfile` |
 | POST | `/profile/signature` | — | `updateSignature` |
+
+**قائمة الموظفين** — بلا `per_page` تُعاد كاملةً كما كانت (تعتمد عليها قوائم
+منسدلة في شاشات أخرى). ومع `per_page` تُرقَّم ويُرفق بها `meta`، وتقبل الفلاتر:
+
+| المعامل | القيم |
+| --- | --- |
+| `search` | الاسم · البريد · المسمى الوظيفي · الرقم الذاتي |
+| `branch_id` · `department_id` · `office_id` | معرّف |
+| `role` | `employee` · `technician` · `department_head` · `branch_manager` · `general_manager` · `database_manager` · `office_manager` |
+| `employment_type` | `fixed` · `contract` |
+| `status` | `active` · `inactive` |
+
+الفلاتر تُضيّق نطاق المستخدم ولا توسّعه: نطاقه مطبَّق قبلها في
+`OrganizationScopeService`.
 
 **التوقيع** — الجسم: `{ "signature_data": "data:image/png;base64,..." }`
 
