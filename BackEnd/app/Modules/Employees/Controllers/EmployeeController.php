@@ -9,6 +9,7 @@ use App\Modules\Employees\Requests\StoreEmployeeRequest;
 use App\Modules\Employees\Requests\UpdateEmployeeRequest;
 use App\Modules\Employees\Requests\UpdateOwnDetailsRequest;
 use App\Modules\Employees\Resources\UserResource;
+use App\Support\ListQuery;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -18,9 +19,31 @@ class EmployeeController extends Controller
 {
     public function __construct(private EmployeeRepositoryInterface $employees) {}
 
+    /**
+     * بلا per_page تُعاد القائمة كاملةً كما كانت — تعتمد عليها القوائم
+     * المنسدلة في شاشات أخرى. ومع per_page تُرقَّم وتُرفق بها meta.
+     */
     public function index(Request $request): JsonResponse
     {
-        return response()->json(['employees' => UserResource::collection($this->employees->all($request->user()))]);
+        if (! $request->filled('per_page')) {
+            return response()->json(['employees' => UserResource::collection($this->employees->all($request->user()))]);
+        }
+
+        $page = $this->employees->paginate($request->user(), [
+            'search' => $request->string('search')->toString(),
+            'per_page' => $request->integer('per_page'),
+            'branch_id' => $request->integer('branch_id') ?: null,
+            'department_id' => $request->integer('department_id') ?: null,
+            'office_id' => $request->integer('office_id') ?: null,
+            'role' => $request->string('role')->toString() ?: null,
+            'employment_type' => $request->string('employment_type')->toString() ?: null,
+            'status' => $request->string('status')->toString() ?: null,
+        ]);
+
+        return response()->json([
+            'employees' => UserResource::collection($page->items()),
+            'meta' => ListQuery::meta($page),
+        ]);
     }
 
     public function store(StoreEmployeeRequest $request): UserResource

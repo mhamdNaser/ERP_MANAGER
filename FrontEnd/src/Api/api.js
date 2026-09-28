@@ -207,6 +207,13 @@ const communicationApi = {
   createCircular: (data) =>
     request("/circulars", { method: "POST", body: toFormData(data) }),
 };
+const listQuery = (params = {}) => {
+  const query = new URLSearchParams(
+    Object.entries(params).filter(([, value]) => value !== "" && value != null),
+  ).toString();
+  return query ? `?${query}` : "";
+};
+
 const organizationApi = {
   offices: () => request("/offices"),
   saveOffice: (data, id) =>
@@ -231,19 +238,14 @@ const organizationApi = {
   updateHrBalance: (employeeId, data) =>
     request(`/hr/balances/${employeeId}`, { method: "PUT", body: JSON.stringify(data) }),
   myFleetMissions: () => request("/fleet/my-missions"),
-  fleetMissions: (params = {}) => {
-    const query = new URLSearchParams(
-      Object.entries(params).filter(([, value]) => value !== "" && value != null),
-    ).toString();
-    return request(`/fleet/missions${query ? `?${query}` : ""}`);
-  },
+  fleetMissions: (params) => request(`/fleet/missions${listQuery(params)}`),
   createFleetMission: (data) =>
     request("/fleet/missions", { method: "POST", body: toFormData(data) }),
   decideFleetMission: (id, data) =>
     request(`/fleet/missions/${id}/decision`, { method: "POST", body: JSON.stringify(data) }),
   cancelFleetMission: (id) =>
     request(`/fleet/missions/${id}/cancel`, { method: "POST" }),
-  employees: () => request("/employees"),
+  employees: (params) => request(`/employees${listQuery(params)}`),
   saveEmployee: (data, id) =>
     request(id ? `/employees/${id}` : "/employees", {
       method: id ? "PUT" : "POST",
@@ -268,6 +270,10 @@ const organizationApi = {
     }),
   deleteEmployee: (id) => request(`/employees/${id}`, { method: "DELETE" }),
   organization: () => request("/organization"),
+  organizationBranches: (params) =>
+    request(`/organization/branches${listQuery(params)}`),
+  organizationDepartments: (params) =>
+    request(`/organization/departments${listQuery(params)}`),
   saveBranch: (data, id) =>
     request(id ? `/branches/${id}` : "/branches", {
       method: id ? "PUT" : "POST",

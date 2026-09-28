@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('cnd.auth')->group(function () {
     Route::get('organization', [OrganizationController::class, 'index'])->middleware('permission:organization.view');
+    Route::get('organization/branches', [OrganizationController::class, 'branches'])->middleware('permission:organization.view');
+    Route::get('organization/departments', [OrganizationController::class, 'departments'])->middleware('permission:organization.view');
     Route::post('branches', [OrganizationController::class, 'storeBranch'])->middleware('permission:branches.create');
     Route::put('branches/{branch}', [OrganizationController::class, 'updateBranch'])->middleware('permission:branches.update');
     Route::delete('branches/{branch}', [OrganizationController::class, 'destroyBranch'])->middleware('permission:branches.delete');

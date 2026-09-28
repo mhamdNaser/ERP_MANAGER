@@ -1,5 +1,9 @@
 import logo from "../assets/logo.jpg";
 import { useLanguage } from "../Provider/LanguageContext";
+
+/** رقم الإصدار يُحقن وقت البناء من ملف VERSION في جذر المشروع. */
+const version = import.meta.env.VITE_APP_VERSION;
+
 export function BrandLogo({ compact = false }) {
   const { t } = useLanguage();
   return (
@@ -15,6 +19,14 @@ export function BrandLogo({ compact = false }) {
           <small className="block truncate text-[10px] opacity-60">
             {t("ui_brandSubtitle")}
           </small>
+          {version && (
+            <small
+              className="block font-mono text-[10px] opacity-45"
+              title={t("ui_appVersion")}
+            >
+              v{version}
+            </small>
+          )}
         </div>
       )}
     </div>

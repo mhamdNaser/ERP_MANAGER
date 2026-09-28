@@ -3,6 +3,8 @@ namespace App\Modules\Employees\Repositories\Eloquent;
 
 use App\Models\User;
 use App\Modules\Employees\Repositories\Interfaces\EmployeeRepositoryInterface;
+use App\Support\ListQuery;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Hash;
 use App\Modules\Organization\Services\OrganizationScopeService;
@@ -12,9 +14,35 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 {
     public function __construct(private OrganizationScopeService $scope) {}
 
+    /** العلاقات التي يحتاجها UserResource — واحدة للقائمة الكاملة وللمرقَّمة. */
+    private const RELATIONS = ['branch:id,name', 'department:id,name', 'office:id,name', 'roles:id,name', 'address', 'familyDetails', 'personalDetails'];
+
     public function all(User $actor): Collection
     {
-        return $this->scope->employees($actor)->with(['branch:id,name', 'department:id,name', 'office:id,name', 'roles:id,name', 'address', 'familyDetails', 'personalDetails'])->latest()->get();
+        return $this->scope->employees($actor)->with(self::RELATIONS)->latest()->get();
+    }
+
+    public function paginate(User $actor, array $filters): LengthAwarePaginator
+    {
+        $query = $this->scope->employees($actor)->with(self::RELATIONS);
+
+        $query = ListQuery::search($query, $filters['search'] ?? null, ['name', 'email', 'job_title', 'employee_number']);
+
+        // الفلاتر تُضيّق النطاق ولا توسّعه: نطاق المستخدم مطبَّق سلفاً أعلاه.
+        $query->when($filters['branch_id'] ?? null, fn ($q, $value) => $q->where('branch_id', $value))
+            ->when($filters['department_id'] ?? null, fn ($q, $value) => $q->where('department_id', $value))
+            ->when($filters['office_id'] ?? null, fn ($q, $value) => $q->where('office_id', $value))
+            ->when($filters['role'] ?? null, fn ($q, $value) => $q->where('role', $value))
+            ->when($filters['employment_type'] ?? null, fn ($q, $value) => $q->where('employment_type', $value));
+
+        // الحالة قيمتها منطقية، فـwhen لا تصلح لها: false تُسقط الشرط.
+        if (($filters['status'] ?? null) === 'active') {
+            $query->where('is_active', true);
+        } elseif (($filters['status'] ?? null) === 'inactive') {
+            $query->where('is_active', false);
+        }
+
+        return $query->latest()->paginate(ListQuery::perPage($filters['per_page'] ?? null));
     }
 
     public function create(User $actor, array $data): User

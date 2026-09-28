@@ -1,18 +1,45 @@
 import { Pencil, Power, PowerOff, Trash2 } from "lucide-react";
+import { ListPager } from "../../../Components/ListPager";
+import { ListSearch } from "../../../Components/ListSearch";
 import { useLanguage } from "../../../Provider/LanguageContext";
 
-export function UnitSection({ title, items, action, actionLabel }) {
+export function UnitSection({
+  title,
+  items,
+  action,
+  actionLabel,
+  search,
+  onSearch,
+  searchPlaceholder,
+  meta,
+  onPage,
+  busy = false,
+}) {
   const { t } = useLanguage();
   return (
     <section className="card">
-      <div className="card-head">
+      <div className="card-head flex-wrap gap-2">
         <h2 className="section-title">{title}</h2>
-        {action && (
-          <button className="btn btn-secondary btn-sm" onClick={action}>
-            {actionLabel}
-          </button>
-        )}
+        <div className="flex flex-1 items-center justify-end gap-2">
+          {onSearch && (
+            <ListSearch
+              value={search}
+              onChange={onSearch}
+              placeholder={searchPlaceholder}
+            />
+          )}
+          {action && (
+            <button className="btn btn-secondary btn-sm shrink-0" onClick={action}>
+              {actionLabel}
+            </button>
+          )}
+        </div>
       </div>
+      {items.length === 0 && (
+        <p className="px-4 py-6 text-center text-xs text-muted">
+          {search ? t("ui_noSearchResults") : t("ui_emptyList")}
+        </p>
+      )}
       <div className="flex flex-col">
         {items.map(({ id, name, meta, Icon, isActive, edit, remove, toggleActive }) => (
           <div
@@ -65,6 +92,7 @@ export function UnitSection({ title, items, action, actionLabel }) {
           </div>
         ))}
       </div>
+      <ListPager meta={meta} onPage={onPage} busy={busy} />
     </section>
   );
 }

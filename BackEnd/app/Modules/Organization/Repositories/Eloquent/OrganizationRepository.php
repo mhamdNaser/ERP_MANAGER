@@ -6,7 +6,9 @@ use App\Models\Department;
 use App\Models\User;
 use App\Modules\Organization\Repositories\Interfaces\OrganizationRepositoryInterface;
 use App\Modules\Organization\Services\OrganizationScopeService;
+use App\Support\ListQuery;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
 class OrganizationRepository implements OrganizationRepositoryInterface
@@ -15,6 +17,25 @@ class OrganizationRepository implements OrganizationRepositoryInterface
 
     public function branches(User $actor): Collection { return $this->scope->branches($actor)->withCount(['departments'])->get(); }
     public function departments(User $actor): Collection { return $this->scope->departments($actor)->with('branch:id,name')->withCount('users')->get(); }
+
+    public function paginateBranches(User $actor, array $filters): LengthAwarePaginator
+    {
+        $query = $this->scope->branches($actor)->withCount('departments');
+
+        return ListQuery::search($query, $filters['search'] ?? null, ['name', 'code'])
+            ->orderBy('name')
+            ->paginate(ListQuery::perPage($filters['per_page'] ?? null));
+    }
+
+    /** يبحث في اسم القسم ورمزه واسم فرعه — «أقسام فرع الشبكات» سؤالٌ طبيعي. */
+    public function paginateDepartments(User $actor, array $filters): LengthAwarePaginator
+    {
+        $query = $this->scope->departments($actor)->with('branch:id,name')->withCount('users');
+
+        return ListQuery::search($query, $filters['search'] ?? null, ['name', 'code', 'branch.name'])
+            ->orderBy('name')
+            ->paginate(ListQuery::perPage($filters['per_page'] ?? null));
+    }
 
     public function createBranch(User $actor, array $data): Branch
     {

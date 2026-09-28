@@ -5,6 +5,7 @@ import taskPart from './parts/task';
 import guidePart from './parts/guide';
 import { fleet as fleetPart } from './parts/fleet';
 import { hr as hrPart } from './parts/hr';
+import { lists as listsPart } from './parts/lists';
 import { templates as templatesPart } from './parts/templates';
 import uiPart from './parts/ui';
 
@@ -137,7 +138,7 @@ const base = {
     },
 };
 
-const parts = [apiPart, drivePart, formalPart, taskPart, guidePart, uiPart, hrPart, fleetPart, templatesPart];
+const parts = [apiPart, drivePart, formalPart, taskPart, guidePart, uiPart, hrPart, fleetPart, templatesPart, listsPart];
 export const translations = {
     ar: Object.assign({}, base.ar, ...parts.map((p) => p.ar)),
     en: Object.assign({}, base.en, ...parts.map((p) => p.en)),
