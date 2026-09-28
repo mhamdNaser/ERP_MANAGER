@@ -2,6 +2,7 @@ import { Building2, Landmark, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLanguage } from "../../Provider/LanguageContext";
 import { api } from "../../lib";
+import { OrgChart } from "./components/OrgChart";
 
 export function OrgTreePage({ notify }) {
   const { t } = useLanguage();
@@ -47,6 +48,8 @@ export function OrgTreePage({ notify }) {
           <p className="page-subtitle">{t("orgTreeIntro")}</p>
         </div>
       </div>
+
+      <OrgChart branches={branches} departments={departments} />
 
       <section
         className={`card p-4 transition-colors ${

@@ -22,6 +22,12 @@ export const lists = {
     ui_searchEmployees: "ابحث بالاسم أو البريد أو الرقم الذاتي…",
 
     officeManagerRole: "مدير مكتب",
+
+    orgChartTitle: "المخطط التنظيمي",
+    orgChartHint: "الإدارة في الأعلى، تحتها الأفرع، وتحت كل فرع أقسامه. يتحدّث تلقائياً مع كل إضافة أو نقل.",
+    orgChartRoot: "الإدارة",
+    orgChartLooseHint: "ومعها أقسام تابعة مباشرةً",
+    orgChartEmpty: "لا أفرع ولا أقسام بعد — أضف فرعاً ليظهر في المخطط.",
   },
   en: {
     ui_appVersion: "System version",
@@ -46,5 +52,11 @@ export const lists = {
     ui_searchEmployees: "Search by name, email or staff number…",
 
     officeManagerRole: "Office manager",
+
+    orgChartTitle: "Organization chart",
+    orgChartHint: "Administration on top, branches beneath it, and each branch's departments under it. It updates with every addition or move.",
+    orgChartRoot: "Administration",
+    orgChartLooseHint: "plus directly attached departments",
+    orgChartEmpty: "No branches or departments yet — add a branch to see it here.",
   },
 };
