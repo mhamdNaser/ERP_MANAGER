@@ -1,15 +1,20 @@
 /**
  * تخطيط شجرة تنظيمية من ثلاث طبقات: الإدارة ← الأفرع ← الأقسام.
  *
- * الخوارزمية تمنع التداخل بالبناء لا بالتصحيح بعده: عرض كل عقدة يساوي مجموع
- * أعراض أبنائها مع الفواصل بينهم، فلا يتقاطع فرعان مهما كثرت أقسامهما. ثم
- * يُوضع الأب في منتصف مدى أبنائه.
+ * الاتجاه من اليمين إلى اليسار موافقةً لاتجاه الواجهة: الإدارة في أقصى
+ * اليمين، وكل مستوى تالٍ إلى يسار سابقه، والإخوة يتراصّون عمودياً.
+ *
+ * الخوارزمية تمنع التداخل بالبناء لا بالتصحيح بعده: ارتفاع كل عقدة يساوي
+ * مجموع ارتفاعات أبنائها مع الفواصل بينهم، فلا يتقاطع فرعان مهما كثرت
+ * أقسامهما. ثم يُوضع الأب في منتصف مدى أبنائه.
  */
 
 export const NODE_WIDTH = 168;
 export const NODE_HEIGHT = 56;
-export const GAP_X = 18;
-export const GAP_Y = 46;
+/** المسافة الأفقية بين مستوى ومستوى — تتسع لناقل خطوط الوصل في منتصفها. */
+export const GAP_LEVEL = 56;
+/** المسافة العمودية بين الإخوة. */
+export const GAP_SIBLING = 12;
 export const PADDING = 16;
 
 /** يبني الشجرة من قوائم الأفرع والأقسام كما يعيدها الخادم. */
@@ -46,68 +51,72 @@ export function buildTree(branches, departments, rootLabel, looseLabel) {
   };
 }
 
-/** عرض الشجرة الفرعية: أوسع من عقدةٍ واحدة فقط إن كان لها أبناء. */
+/** ارتفاع الشجرة الفرعية: أطول من عقدةٍ واحدة فقط إن كان لها أبناء. */
 function measure(node) {
   if (node.children.length === 0) {
-    node.width = NODE_WIDTH;
-    return node.width;
+    node.height = NODE_HEIGHT;
+    return node.height;
   }
 
-  const childrenWidth =
+  const childrenHeight =
     node.children.reduce((total, child) => total + measure(child), 0) +
-    GAP_X * (node.children.length - 1);
+    GAP_SIBLING * (node.children.length - 1);
 
-  node.width = Math.max(NODE_WIDTH, childrenWidth);
-  return node.width;
+  node.height = Math.max(NODE_HEIGHT, childrenHeight);
+  return node.height;
+}
+
+/** عدد المستويات، لحساب عرض اللوحة قبل وضع العقد. */
+function levelCount(node) {
+  if (node.children.length === 0) return 1;
+  return 1 + Math.max(...node.children.map(levelCount));
 }
 
 /** يضع كل عقدة: الأب في منتصف مدى أبنائه، والأبناء متتابعين بلا تداخل. */
-function place(node, left, depth, out) {
-  const top = PADDING + depth * (NODE_HEIGHT + GAP_Y);
+function place(node, top, depth, xFor, out) {
+  node.x = xFor(depth);
 
   if (node.children.length === 0) {
-    node.x = left + (node.width - NODE_WIDTH) / 2;
-    node.y = top;
+    node.y = top + (node.height - NODE_HEIGHT) / 2;
     out.push(node);
     return;
   }
 
-  let cursor = left;
+  let cursor = top;
   node.children.forEach((child) => {
-    place(child, cursor, depth + 1, out);
-    cursor += child.width + GAP_X;
+    place(child, cursor, depth + 1, xFor, out);
+    cursor += child.height + GAP_SIBLING;
   });
 
   const first = node.children[0];
   const last = node.children[node.children.length - 1];
-  node.x = (first.x + last.x + NODE_WIDTH) / 2 - NODE_WIDTH / 2;
-  node.y = top;
+  node.y = (first.y + last.y + NODE_HEIGHT) / 2 - NODE_HEIGHT / 2;
   out.push(node);
 }
 
-/** خطوط الوصل: نزول من الأب، ثم ناقلٌ أفقي، ثم نزول إلى كل ابن. */
+/** خطوط الوصل: خروج من يسار الأب، ثم ناقلٌ عمودي، ثم دخول إلى يمين كل ابن. */
 function connectors(node, lines) {
   if (node.children.length === 0) return;
 
-  const parentBottom = node.y + NODE_HEIGHT;
-  const busY = parentBottom + GAP_Y / 2;
-  const parentCenter = node.x + NODE_WIDTH / 2;
+  const parentLeft = node.x;
+  const busX = parentLeft - GAP_LEVEL / 2;
+  const parentMiddle = node.y + NODE_HEIGHT / 2;
 
-  lines.push({ x1: parentCenter, y1: parentBottom, x2: parentCenter, y2: busY });
+  lines.push({ x1: parentLeft, y1: parentMiddle, x2: busX, y2: parentMiddle });
 
-  const centers = node.children.map((child) => child.x + NODE_WIDTH / 2);
-  if (centers.length > 1) {
+  const middles = node.children.map((child) => child.y + NODE_HEIGHT / 2);
+  if (middles.length > 1) {
     lines.push({
-      x1: Math.min(...centers),
-      y1: busY,
-      x2: Math.max(...centers),
-      y2: busY,
+      x1: busX,
+      y1: Math.min(...middles),
+      x2: busX,
+      y2: Math.max(...middles),
     });
   }
 
   node.children.forEach((child) => {
-    const center = child.x + NODE_WIDTH / 2;
-    lines.push({ x1: center, y1: busY, x2: center, y2: child.y });
+    const middle = child.y + NODE_HEIGHT / 2;
+    lines.push({ x1: busX, y1: middle, x2: child.x + NODE_WIDTH, y2: middle });
     connectors(child, lines);
   });
 }
@@ -116,18 +125,17 @@ function connectors(node, lines) {
 export function layoutTree(root) {
   measure(root);
 
+  const levels = levelCount(root);
+  const width = PADDING * 2 + levels * NODE_WIDTH + (levels - 1) * GAP_LEVEL;
+  // العمق يمضي يساراً: المستوى صفر في أقصى اليمين.
+  const xFor = (depth) =>
+    width - PADDING - NODE_WIDTH - depth * (NODE_WIDTH + GAP_LEVEL);
+
   const nodes = [];
-  place(root, PADDING, 0, nodes);
+  place(root, PADDING, 0, xFor, nodes);
 
   const lines = [];
   connectors(root, lines);
 
-  const depth = root.children.some((child) => child.children.length) ? 3 : 2;
-
-  return {
-    nodes,
-    lines,
-    width: root.width + PADDING * 2,
-    height: PADDING * 2 + depth * NODE_HEIGHT + (depth - 1) * GAP_Y,
-  };
+  return { nodes, lines, width, height: root.height + PADDING * 2 };
 }

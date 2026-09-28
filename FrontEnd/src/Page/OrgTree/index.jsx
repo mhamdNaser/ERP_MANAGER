@@ -1,14 +1,15 @@
-import { Building2, Landmark, Users } from "lucide-react";
+import { Building2, Landmark, Network, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLanguage } from "../../Provider/LanguageContext";
 import { api } from "../../lib";
-import { OrgChart } from "./components/OrgChart";
+import { OrgChartModal } from "./components/OrgChartModal";
 
 export function OrgTreePage({ notify }) {
   const { t } = useLanguage();
   const [branches, setBranches] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [dragging, setDragging] = useState(null);
+  const [preview, setPreview] = useState(false);
   const [overTarget, setOverTarget] = useState(null);
 
   const load = () => {
@@ -47,9 +48,11 @@ export function OrgTreePage({ notify }) {
           <h1 className="page-title">{t("orgTreeTitle")}</h1>
           <p className="page-subtitle">{t("orgTreeIntro")}</p>
         </div>
+        <button className="btn btn-secondary" onClick={() => setPreview(true)}>
+          <Network size={16} />
+          {t("orgChartPreview")}
+        </button>
       </div>
-
-      <OrgChart branches={branches} departments={departments} />
 
       <section
         className={`card p-4 transition-colors ${
@@ -126,6 +129,15 @@ export function OrgTreePage({ notify }) {
           </section>
         ))}
       </div>
+
+      {preview && (
+        <OrgChartModal
+          branches={branches}
+          departments={departments}
+          notify={notify}
+          close={() => setPreview(false)}
+        />
+      )}
     </div>
   );
 }
