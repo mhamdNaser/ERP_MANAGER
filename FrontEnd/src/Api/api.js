@@ -310,6 +310,19 @@ const administrationApi = {
     }),
   downloadDatabaseBackup: (fileName) =>
     requestBlob(`/database-backups/${fileName}/download`),
+  backupPresets: () => request("/database-backups/presets"),
+  createPresetBackup: (preset) =>
+    request("/database-backups/internal", {
+      method: "POST",
+      body: JSON.stringify({ preset }),
+    }),
+  downloadPresetBackup: (preset) =>
+    requestBlob("/database-backups/external", {
+      method: "POST",
+      body: JSON.stringify({ preset }),
+    }),
+  buildMigrationPackage: () =>
+    request("/database-backups/migration-package", { method: "POST" }),
   documentTemplates: () => request("/document-templates"),
   downloadDocumentTemplate: (key) =>
     requestBlob(`/document-templates/${key}/download`),

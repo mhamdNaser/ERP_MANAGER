@@ -13,6 +13,7 @@ import { MaintenanceLog } from "./components/MaintenanceLog";
 import { PasswordConfirmModal } from "./components/PasswordConfirmModal";
 import { ExcelExportPanel } from "./components/ExcelExportPanel";
 import { ExcelImportPanel } from "./components/ExcelImportPanel";
+import { PortabilityPanel } from "./components/PortabilityPanel";
 
 export function DatabaseManagerPage({ reports, open, notify, user }) {
   const { t } = useLanguage();
@@ -64,6 +65,14 @@ export function DatabaseManagerPage({ reports, open, notify, user }) {
           onDelete={manager.deleteExisting}
         />
       </section>
+
+      <PortabilityPanel
+        presets={manager.presets}
+        busy={manager.busy}
+        canMigrate={canMaintain}
+        onPreset={manager.createPresetBackup}
+        onMigration={manager.buildMigrationPackage}
+      />
 
       <ExcelExportPanel tables={manager.tables} onExport={manager.exportTable} />
 

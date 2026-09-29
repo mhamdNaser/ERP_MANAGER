@@ -31,8 +31,14 @@ class DatabaseBackupService
     }
 
     /** @return array{file_name: string, size: int, created_at: string, download_url: string, kind: string, format: ?string, bundled: bool, files?: array} */
-    public function createBackup(string $kind = 'internal', string $format = 'json', ?array $tables = null, bool $bundleFiles = false): array
+    public function createBackup(string $kind = 'internal', string $format = 'json', ?array $tables = null, bool $bundleFiles = false, array $rowFilters = []): array
     {
+        // مرشِّح الصفوف يقصر الجدول على صفوف كيانٍ بعينه، وهو ما لا يقدر عليه
+        // pg_dump — فالحزم الجاهزة تُصدَّر JSON حصراً.
+        if ($rowFilters !== [] && $format !== 'json') {
+            abort(422, 'الحزم الجاهزة تُصدَّر بصيغة JSON فقط.');
+        }
+
         abort_unless(in_array($format, self::FORMATS, true), 422, "صيغة تصدير غير مدعومة: {$format}");
 
         $disk = $this->disk();
@@ -53,7 +59,7 @@ class DatabaseBackupService
         $absolutePath = Storage::disk($disk)->path("{$directory}/{$fileName}");
 
         if ($format === 'json') {
-            $this->writeJson($absolutePath, $kind, $scopedTables);
+            $this->writeJson($absolutePath, $kind, $scopedTables, $rowFilters);
         } else {
             $this->pgDump->dump($absolutePath, $format, $scopedTables, $this->tables->maintenanceConnection());
         }
@@ -61,7 +67,7 @@ class DatabaseBackupService
         // جدول الجداول المطلوبة (أو null = الكل) بجانب كل ملف، بصيغة مستقلة عن
         // محتوى الملف نفسه — يتيح لواجهة الاستعادة معرفة نطاق نسخ SQL/Backup
         // دون الحاجة لتحليل pg_dump أو استدعاء pg_restore --list.
-        file_put_contents("{$absolutePath}.meta", json_encode(['tables' => $scopedTables], JSON_UNESCAPED_UNICODE));
+        file_put_contents("{$absolutePath}.meta", json_encode(['tables' => $scopedTables, 'row_filters' => $rowFilters], JSON_UNESCAPED_UNICODE));
 
         if (! $bundleFiles) {
             return $this->metadata("{$directory}/{$fileName}");
@@ -70,7 +76,8 @@ class DatabaseBackupService
         $zipFileName = "{$fileName}.zip";
         $zipAbsolutePath = Storage::disk($disk)->path("{$directory}/{$zipFileName}");
         $filesSummary = $this->fileBundler->bundle(
-            $zipAbsolutePath, $absolutePath, $extension, $scopedTables, $this->tables->maintenanceConnection(),
+            $zipAbsolutePath, $absolutePath, $extension, $scopedTables,
+            $this->tables->maintenanceConnection(), $rowFilters,
         );
         @unlink($absolutePath);
         @unlink("{$absolutePath}.meta");
@@ -199,24 +206,28 @@ class DatabaseBackupService
         return array_values(array_unique($tables));
     }
 
-    private function writeJson(string $absolutePath, string $kind, ?array $tables): void
+    private function writeJson(string $absolutePath, string $kind, ?array $tables, array $rowFilters = []): void
     {
         $payload = [
             'generated_at' => now()->toIso8601String(),
             'kind' => $kind,
             'connection' => $this->database->connectionName(),
             'database' => $this->database->databaseName(),
-            'tables' => $this->tableData($tables),
+            'tables' => $this->tableData($tables, $rowFilters),
         ];
 
         file_put_contents($absolutePath, json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
     }
 
-    private function tableData(?array $only): array
+    private function tableData(?array $only, array $rowFilters = []): array
     {
         $tables = $only ?? $this->tables->backupTables();
 
-        return collect($tables)->mapWithKeys(fn (string $table) => [$table => $this->database->allRows($table)])->all();
+        return collect($tables)
+            ->mapWithKeys(fn (string $table) => [
+                $table => $this->database->allRows($table, $rowFilters[$table] ?? []),
+            ])
+            ->all();
     }
 
     private function formatFor(string $file): ?string

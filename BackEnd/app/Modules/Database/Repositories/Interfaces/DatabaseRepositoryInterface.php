@@ -24,9 +24,10 @@ interface DatabaseRepositoryInterface
     /** أعمدة مسارات المرفقات: صفوف {table_name, column_name}. */
     public function pathColumnRows(?string $connection, array $scopedTables): array;
 
-    public function allRows(string $table): Collection;
+    /** @param array{where?: array<string,mixed>, where_not_null?: array<int,string>} $filter */
+    public function allRows(string $table, array $filter = []): Collection;
     public function chunkRows(string $table, string $orderBy, int $size, callable $callback): void;
-    public function columnValues(string $table, string $column, ?string $connection = null): Collection;
+    public function columnValues(string $table, string $column, ?string $connection = null, array $filter = []): Collection;
     public function insertRows(string $table, array $rows, ?string $connection = null): void;
     public function deleteRows(string $table, ?string $connection = null): void;
     public function truncateTables(array $tables, ?string $connection = null): void;

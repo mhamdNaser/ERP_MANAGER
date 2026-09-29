@@ -22,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
     // أوامر الوحدات (Modules) لا تُكتشف تلقائيًا كـ app/Console/Commands — تُسجَّل هنا صراحة.
     ->withCommands([
         \App\Modules\Database\Commands\CreateAutomaticBackupCommand::class,
+        \App\Modules\Database\Commands\BuildMigrationPackageCommand::class,
     ])
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([

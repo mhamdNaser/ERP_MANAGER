@@ -33,6 +33,7 @@ class BackupFileBundler
         string $dumpExtension,
         ?array $scopedTables,
         ?string $connection = null,
+        array $rowFilters = [],
     ): array {
         $zip = new ZipArchive();
         if ($zip->open($zipAbsolutePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
@@ -52,7 +53,9 @@ class BackupFileBundler
 
         foreach ($tables as $table) {
             foreach ($pathColumns[$table] ?? [] as $column) {
-                $values = $this->database->columnValues($table, $column, $connection);
+                // مرشِّح الحزمة يقصر الملفات على صفوف كيانها: ملفات المهام
+                // وحدها من drive_files لا ملفات المؤسسة كلها.
+                $values = $this->database->columnValues($table, $column, $connection, $rowFilters[$table] ?? []);
                 foreach ($values as $relativePath) {
                     if (! is_string($relativePath) || $relativePath === '') {
                         continue;

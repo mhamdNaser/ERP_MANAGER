@@ -8,10 +8,19 @@ export function useDatabaseManager({ t, notify, confirm, canMaintain, canImport 
   const [logs, setLogs] = useState([]);
   const [confirmState, setConfirmState] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [presets, setPresets] = useState([]);
 
   const loadBackups = async () => {
     try {
       setBackups(await api.databaseBackups());
+    } catch (error) {
+      notify(error.message, "error");
+    }
+  };
+
+  const loadPresets = async () => {
+    try {
+      setPresets(await api.backupPresets());
     } catch (error) {
       notify(error.message, "error");
     }
@@ -46,6 +55,7 @@ export function useDatabaseManager({ t, notify, confirm, canMaintain, canImport 
   useEffect(() => {
     void loadBackups();
     void loadTables();
+    void loadPresets();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -70,6 +80,49 @@ export function useDatabaseManager({ t, notify, confirm, canMaintain, canImport 
       await loadBackups();
     } catch (error) {
       notify(error.message, "error");
+    }
+  };
+
+  /** حزمة جاهزة: الخادم يختار جداولها ويضمّ ملفاتها، فلا خيارات هنا. */
+  const createPresetBackup = async (preset, download) => {
+    setBusy(true);
+    try {
+      if (download) {
+        const blob = await api.downloadPresetBackup(preset.key);
+        const stamp = new Date().toISOString().slice(0, 10);
+        downloadBlob(blob, `cnd-${preset.key}-${stamp}.json.zip`);
+        notify(t("backupDownloaded"), "success");
+      } else {
+        await api.createPresetBackup(preset.key);
+        notify(t("backupCreated"), "success");
+      }
+      await loadBackups();
+    } catch (error) {
+      notify(error.message, "error");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  /** حزمة الترحيل تطول على مؤسسة كبيرة الملفات — لذلك تُبنى ثم تُنزَّل من القائمة. */
+  const buildMigrationPackage = async () => {
+    setBusy(true);
+    try {
+      const result = await api.buildMigrationPackage();
+      notify(
+        t("migrationPackageBuilt", {
+          files: String(result.manifest?.storage?.files ?? 0),
+          version: result.manifest?.app_version ?? "—",
+        }),
+        "success",
+      );
+      await loadBackups();
+      return result;
+    } catch (error) {
+      notify(error.message, "error");
+      return null;
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -198,6 +251,7 @@ export function useDatabaseManager({ t, notify, confirm, canMaintain, canImport 
   return {
     backups,
     tables,
+    presets,
     importTables,
     logs,
     busy,
@@ -211,6 +265,8 @@ export function useDatabaseManager({ t, notify, confirm, canMaintain, canImport 
     requestTruncateAll,
     requestTruncateTables,
     requestRestore,
+    createPresetBackup,
+    buildMigrationPackage,
     exportTable,
     previewImport,
     commitImport,

@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('cnd.auth')->group(function () {
     Route::get('database-backups', [DatabaseBackupController::class, 'index'])->middleware('permission:database.backups.manage');
     Route::get('database-backups/tables', [DatabaseBackupController::class, 'tables'])->middleware('permission:database.backups.manage');
+    Route::get('database-backups/presets', [DatabaseBackupController::class, 'presets'])->middleware('permission:database.backups.manage');
+    Route::post('database-backups/migration-package', [DatabaseBackupController::class, 'migrationPackage'])->middleware(['permission:database.maintenance.manage', 'throttle:3,1']);
     Route::post('database-backups/internal', [DatabaseBackupController::class, 'internal'])->middleware('permission:database.backups.manage');
     Route::post('database-backups/external', [DatabaseBackupController::class, 'external'])->middleware('permission:database.backups.manage');
     Route::get('database-backups/{fileName}/download', [DatabaseBackupController::class, 'download'])->middleware('permission:database.backups.manage')->where('fileName', '[A-Za-z0-9._-]+');

@@ -4,6 +4,7 @@ namespace App\Modules\Database\Repositories\Eloquent;
 use App\Models\DatabaseMaintenanceLog;
 use App\Modules\Database\Repositories\Interfaces\DatabaseRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -87,9 +88,28 @@ class DatabaseRepository implements DatabaseRepositoryInterface
         };
     }
 
-    public function allRows(string $table): Collection
+    public function allRows(string $table, array $filter = []): Collection
     {
-        return DB::table($table)->get();
+        return $this->filtered(DB::table($table), $filter)->get();
+    }
+
+    /**
+     * يقيّد الاستعلام بمرشِّح الحزمة الجاهزة.
+     *
+     * المرشِّح بسيط عمداً — مساواةٌ أو «ليس فارغاً» — لأن غرضه تمييز صفوف
+     * كيانٍ داخل جدول مشترك (ملفات المهام داخل الدرايف)، لا بناء لغة استعلام.
+     */
+    private function filtered(Builder $query, array $filter): Builder
+    {
+        foreach ($filter['where'] ?? [] as $column => $value) {
+            $query->where($column, $value);
+        }
+
+        foreach ($filter['where_not_null'] ?? [] as $column) {
+            $query->whereNotNull($column);
+        }
+
+        return $query;
     }
 
     public function chunkRows(string $table, string $orderBy, int $size, callable $callback): void
@@ -97,9 +117,11 @@ class DatabaseRepository implements DatabaseRepositoryInterface
         DB::table($table)->orderBy($orderBy)->chunk($size, $callback);
     }
 
-    public function columnValues(string $table, string $column, ?string $connection = null): Collection
+    public function columnValues(string $table, string $column, ?string $connection = null, array $filter = []): Collection
     {
-        return DB::connection($connection)->table($table)->whereNotNull($column)->pluck($column);
+        $query = DB::connection($connection)->table($table)->whereNotNull($column);
+
+        return $this->filtered($query, $filter)->pluck($column);
     }
 
     public function insertRows(string $table, array $rows, ?string $connection = null): void

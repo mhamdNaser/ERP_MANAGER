@@ -15,6 +15,8 @@ class CreateBackupRequest extends FormRequest
             'tables' => ['sometimes', 'array'],
             'tables.*' => ['string'],
             'bundle_files' => ['sometimes', 'boolean'],
+            // حزمة جاهزة: تُغني عن اختيار الجداول يدوياً وتحدّدها بنفسها.
+            'preset' => ['sometimes', 'string', 'max:40'],
         ];
     }
 }
