@@ -129,9 +129,9 @@ class DatabaseRepository implements DatabaseRepositoryInterface
         DB::connection($connection)->table($table)->insert($rows);
     }
 
-    public function deleteRows(string $table, ?string $connection = null): void
+    public function deleteRows(string $table, ?string $connection = null, array $filter = []): void
     {
-        DB::connection($connection)->table($table)->delete();
+        $this->filtered(DB::connection($connection)->table($table), $filter)->delete();
     }
 
     /**

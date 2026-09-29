@@ -29,7 +29,7 @@ interface DatabaseRepositoryInterface
     public function chunkRows(string $table, string $orderBy, int $size, callable $callback): void;
     public function columnValues(string $table, string $column, ?string $connection = null, array $filter = []): Collection;
     public function insertRows(string $table, array $rows, ?string $connection = null): void;
-    public function deleteRows(string $table, ?string $connection = null): void;
+    public function deleteRows(string $table, ?string $connection = null, array $filter = []): void;
     public function truncateTables(array $tables, ?string $connection = null): void;
     public function clearSqliteSequence(string $table, ?string $connection = null): void;
 

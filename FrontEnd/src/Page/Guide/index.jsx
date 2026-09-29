@@ -4,6 +4,7 @@ import {
   ChevronLeft,
   ClipboardList,
   Compass,
+  DatabaseBackup,
   FileText,
   FileInput,
   HelpCircle,
@@ -141,6 +142,10 @@ const forms = [
   ["guide_formPersonalTitle", "guide_formPersonalText"],
   ["guide_formDesignerTitle", "guide_formDesignerText"],
 ];
+const backupSteps = [1, 2, 3, 4, 5, 6].map((step) => [
+  `guide_backupStep${step}Title`,
+  `guide_backupStep${step}Text`,
+]);
 export function UserGuidePage() {
   const { t } = useLanguage();
   const [query, setQuery] = useState("");
@@ -232,6 +237,33 @@ export function UserGuidePage() {
             </article>
           ))}
         </div>
+      </section>
+      <section className="card">
+        <header className="card-head">
+          <div className="flex min-w-0 items-center gap-2.5">
+            <DatabaseBackup className="h-5 w-5 shrink-0 text-brand-500" />
+            <span className="flex min-w-0 flex-col">
+              <b className="section-title">{t("guide_backupTitle")}</b>
+              <small className="text-xs text-muted">{t("guide_backupHint")}</small>
+            </span>
+          </div>
+        </header>
+        <ol className="card-body m-0 grid list-none grid-cols-1 gap-3 lg:grid-cols-2">
+          {backupSteps.map(([titleKey, textKey], index) => (
+            <li
+              key={titleKey}
+              className="flex gap-3 rounded border border-line bg-subtle p-3"
+            >
+              <span className="inline-grid h-8 w-8 shrink-0 place-items-center rounded bg-brand-500 text-[11px] font-semibold text-white">
+                {index + 1}
+              </span>
+              <div className="min-w-0">
+                <h3 className="text-[13px] font-semibold text-ink">{t(titleKey)}</h3>
+                <p className="mt-1 text-xs leading-relaxed text-muted">{t(textKey)}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
       </section>
       <section className="card">
         <header className="card-head">

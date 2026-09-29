@@ -164,20 +164,30 @@ class DatabaseBackupService
     /** نطاق الجداول المسجَّل مع نسخة SQL/Backup وقت إنشائها — null يعني كل الجداول. */
     public function dumpTablesFor(string $fileName): ?array
     {
-        if ($this->isBundled($fileName)) {
-            $meta = $this->fileBundler->readMeta($this->absolutePath($fileName), self::EXTENSIONS[$this->formatFor($fileName)]);
+        return $this->metaFor($fileName)['tables'] ?? null;
+    }
 
-            return $meta['tables'] ?? null;
+    /**
+     * مرشِّحات الصفوف التي أُخذت بها النسخة — حزمة المهام مثلاً لا تحمل من
+     * drive_files إلا صفوف المهام، فاستعادتها يجب ألا تمسّ بقية الجدول.
+     */
+    public function rowFiltersFor(string $fileName): array
+    {
+        return $this->metaFor($fileName)['row_filters'] ?? [];
+    }
+
+    private function metaFor(string $fileName): array
+    {
+        if ($this->isBundled($fileName)) {
+            return $this->fileBundler->readMeta($this->absolutePath($fileName), self::EXTENSIONS[$this->formatFor($fileName)]) ?? [];
         }
 
         $metaPath = $this->pathFor($fileName) . '.meta';
         if (! Storage::disk($this->disk())->exists($metaPath)) {
-            return null;
+            return [];
         }
 
-        $meta = json_decode(Storage::disk($this->disk())->get($metaPath), true) ?? [];
-
-        return $meta['tables'] ?? null;
+        return json_decode(Storage::disk($this->disk())->get($metaPath), true) ?? [];
     }
 
     private function readJsonPayload(string $fileName): array

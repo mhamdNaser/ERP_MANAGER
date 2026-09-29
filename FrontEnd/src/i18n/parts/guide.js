@@ -104,6 +104,29 @@ export default {
     guide_secPermsD2: "مركز قاعدة البيانات ينشئ نسخاً احتياطية داخلية وخارجية.",
     guide_secPermsD3: "المكاتب المستقلة تربط موظفي الوحدات غير التابعة لفرع أو قسم.",
 
+    // Backup how-to
+    guide_backupTitle: "النسخ الاحتياطي للبيانات مع ملفاتها",
+    guide_backupHint:
+      "كيف تحفظ المهام أو المراسلات أو غيرها مع مرفقاتها، وكيف تستعيدها. من صفحة «إدارة قاعدة البيانات» — لمن يملك صلاحية إدارة النسخ الاحتياطية.",
+    guide_backupStep1Title: "الطريق الأسرع: الحِزَم الجاهزة",
+    guide_backupStep1Text:
+      "في بطاقة «سحب البيانات ونقل النظام» اختر الحزمة: المهام وملفاتها، المراسلات الرسمية وملفاتها، الرسائل الداخلية، الموارد البشرية، الآليات، التعاميم، الفورمات، أو الدرايف كاملاً. كل حزمة تعرف جداول كيانها وتضمّ مرفقاتها تلقائياً — حزمة المهام مثلاً تأخذ ملفات المهام وحدها دون ملفات الدرايف الشخصية.",
+    guide_backupStep2Title: "تنزيل أم حفظ على الخادم",
+    guide_backupStep2Text:
+      "«تنزيل» يعطيك ملف ‎.zip على جهازك، و«احفظها بين النسخ» تتركها على الخادم في سجل النسخ الاحتياطية. انقل نسخة واحدة على الأقل خارج الخادم (قرص خارجي أو مجلد شبكي): إن تعطّل الخادم ضاعت النسخ المحفوظة عليه معه.",
+    guide_backupStep3Title: "نسخة مخصّصة بجداول تختارها",
+    guide_backupStep3Text:
+      "في «مركز النسخ الاحتياطية»: الصيغة JSON، والنطاق «جداول محددة» ثم اختر الجداول، وفعّل خانة «تضمين الملفات المرفقة». بدون هذه الخانة تُحفظ البيانات وحدها وتبقى الملفات خارج النسخة.",
+    guide_backupStep4Title: "تأكّد أن النسخة سليمة",
+    guide_backupStep4Text:
+      "النسخة المحتوية على ملفات تنتهي بـ ‎.zip، وفي داخلها data.json ومجلد files وملف manifest.json. نسخة بلا ‎.zip تعني أن الملفات لم تُضمَّن.",
+    guide_backupStep5Title: "الاستعادة",
+    guide_backupStep5Text:
+      "من «استعادة البيانات» (صلاحية صيانة قاعدة البيانات): اختر النسخة، حدّد الجداول، وأكّد بكلمة مرورك. الجداول المحددة تُستبدل بمحتوى النسخة وتعود الملفات إلى أماكنها. أي تعديل بعد تاريخ النسخة على تلك الجداول يضيع — فخذ نسخة جديدة قبل أي استعادة.",
+    guide_backupStep6Title: "النسخة اليومية وحزمة الترحيل",
+    guide_backupStep6Text:
+      "يأخذ النظام كل يوم الساعة 02:00 نسخة تلقائية لقاعدة البيانات كاملة، لكنها بلا ملفات. لنقل النظام كله إلى خادم آخر استعمل «حزمة ترحيل الخادم»: القاعدة كاملة + كل الملفات + قوالب Word، أو من الطرفية php artisan cnd:migration-package.",
+
     // Forms reference
     guide_formReportTitle: "فورم التقرير",
     guide_formReportText:
@@ -312,6 +335,29 @@ export default {
     guide_secPermsD2: "The database center creates internal and external backups.",
     guide_secPermsD3:
       "Independent offices link staff of units not tied to a branch or department.",
+
+    // Backup how-to
+    guide_backupTitle: "Backing up data with its files",
+    guide_backupHint:
+      "How to save tasks, correspondence and the rest together with their attachments, and how to restore them. From the Database management page — for users with backup permission.",
+    guide_backupStep1Title: "Fastest: ready-made packages",
+    guide_backupStep1Text:
+      "In the “Data export & system migration” card pick a package: tasks, official correspondence, internal messages, HR, fleet, circulars, forms, or the whole drive. Each package knows its tables and bundles its attachments — the tasks package takes task files only, never personal drive files.",
+    guide_backupStep2Title: "Download or keep on the server",
+    guide_backupStep2Text:
+      "“Download” gives you a .zip on your computer; “Keep with the backups” leaves it in the server's backup list. Keep at least one copy off the server (external disk or network share): if the server fails, the backups stored on it go with it.",
+    guide_backupStep3Title: "A custom backup of chosen tables",
+    guide_backupStep3Text:
+      "In the Backup center: format JSON, scope “Specific tables”, pick the tables, and tick “Bundle attached files”. Without that box only the data is saved and the files stay out.",
+    guide_backupStep4Title: "Check the backup",
+    guide_backupStep4Text:
+      "A backup that carries files ends in .zip and contains data.json, a files folder and manifest.json. No .zip means the files were not included.",
+    guide_backupStep5Title: "Restoring",
+    guide_backupStep5Text:
+      "From “Restore data” (database maintenance permission): pick the backup, select tables and confirm with your password. The selected tables are replaced by the backup and the files return to their places. Changes made to those tables after the backup date are lost — take a fresh backup before any restore.",
+    guide_backupStep6Title: "The daily backup and the migration package",
+    guide_backupStep6Text:
+      "Every day at 02:00 the system takes an automatic full database backup, without files. To move the whole system to another server use the “Server migration package”: the full database + all files + Word templates, or from the terminal php artisan cnd:migration-package.",
 
     // Forms reference
     guide_formReportTitle: "Report form",

@@ -57,12 +57,13 @@ class DatabaseRestoreService
         $this->assertTruncatable($tables);
 
         $payload = $this->backups->payloadTables($fileName, $tables);
+        $rowFilters = $this->backups->rowFiltersFor($fileName);
         $connection = $this->tables->maintenanceConnection();
 
         $summary = [];
-        $this->guarded(function () use ($tables, $payload, $connection, &$summary) {
-            $this->database->transaction(function () use ($tables, $payload, $connection, &$summary) {
-                $this->clearRows($tables, $connection);
+        $this->guarded(function () use ($tables, $payload, $rowFilters, $connection, &$summary) {
+            $this->database->transaction(function () use ($tables, $payload, $rowFilters, $connection, &$summary) {
+                $this->clearRows($tables, $connection, $rowFilters);
 
                 foreach ($tables as $table) {
                     $rows = $payload[$table] ?? [];
@@ -126,11 +127,15 @@ class DatabaseRestoreService
      * الجدول (مثل users.office_id التي تُصفَّر بلا حذف السجل المرجعي)، بخلاف
      * TRUNCATE التي تفرغ أي جدول مرجعي بالكامل مهما كانت قاعدته — وهذا بالضبط
      * ما تسبب سابقًا بمسح جدول users بالكامل عند استعادة نسخة من offices.
+     *
+     * والجدول المأخوذ بمرشِّح يُحذف منه ما يطابق المرشِّح وحده: حزمة المهام
+     * تحمل من drive_files ملفات المهام فقط، وحذف الجدول كله قبل تعبئتها كان
+     * سيمحو ملفات الدرايف الشخصية لكل الموظفين.
      */
-    private function clearRows(array $tables, string $connection): void
+    private function clearRows(array $tables, string $connection, array $rowFilters = []): void
     {
         foreach ($tables as $table) {
-            $this->database->deleteRows($table, $connection);
+            $this->database->deleteRows($table, $connection, $rowFilters[$table] ?? []);
         }
     }
 

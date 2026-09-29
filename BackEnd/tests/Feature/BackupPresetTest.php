@@ -7,6 +7,7 @@ use App\Models\Task;
 use App\Models\User;
 use App\Modules\Database\Services\BackupPresetRegistry;
 use App\Modules\Database\Services\DatabaseBackupService;
+use App\Modules\Database\Services\DatabaseRestoreService;
 use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
@@ -154,4 +155,30 @@ it('rejects an unknown preset', function () {
     $this->withToken('preset-actor')
         ->postJson('/api/database-backups/internal', ['preset' => 'nothing-like-this'])
         ->assertStatus(422);
+});
+
+it('restores a task package without touching the rest of the drive', function () {
+    $owner = presetActor();
+    $seeded = seedTaskWithFile($owner);
+
+    $presets = app(BackupPresetRegistry::class);
+    $backup = app(DatabaseBackupService::class)->createBackup(
+        'internal', 'json', $presets->tables('tasks'), true, $presets->rowFilters('tasks'),
+    );
+
+    // ملف شخصي يُرفع بعد النسخة: لا تعرفه الحزمة، فيجب أن ينجو من استعادتها.
+    $laterFile = DriveFile::create([
+        'uploader_id' => $owner->id,
+        'scope' => 'personal',
+        'name' => 'later.pdf',
+        'path' => 'drive/later.pdf',
+        'size' => 5,
+        'mime_type' => 'application/pdf',
+    ]);
+
+    app(DatabaseRestoreService::class)->restore($backup['file_name'], $presets->tables('tasks'));
+
+    expect(DriveFile::pluck('id')->sort()->values()->all())
+        ->toBe(collect([$seeded['taskFile']->id, $seeded['personalFile']->id, $laterFile->id])->sort()->values()->all())
+        ->and(Task::count())->toBe(1);
 });
