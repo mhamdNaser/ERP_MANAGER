@@ -13,7 +13,25 @@ function selectableDepartments(departments, currentId, t) {
     }));
 }
 
-export function getEditorConfig(editor, branches, departments, offices, t) {
+/**
+ * أقسام الفرع المختار وحدها؛ وبلا فرع تظهر أقسام الإدارة المباشرة.
+ * القسم المحفوظ حالياً يبقى ظاهراً مهما كان الفرع، كي لا يفقده حفظٌ لموظف
+ * سجلُّه غير متطابق أصلاً.
+ */
+function departmentsOfBranch(departments, branchId, currentId, t) {
+  const belongs = (department) =>
+    String(department.branch_id ?? "") === String(branchId ?? "");
+
+  return selectableDepartments(
+    departments.filter(
+      (department) => belongs(department) || department.id === currentId,
+    ),
+    currentId,
+    t,
+  );
+}
+
+export function getEditorConfig(editor, branches, departments, offices, t, canAssignCommunication = false) {
   if (editor.kind === "branch")
     return {
       title: editor.item ? t("editBranch") : t("addBranch"),
@@ -67,7 +85,8 @@ export function getEditorConfig(editor, branches, departments, offices, t) {
   return {
     title: editor.item ? t("editEmployee") : t("addEmployee"),
     subtitle: t("employeeFormHint"),
-    fields: [
+    // دالّة لا مصفوفة: قائمة الأقسام تتبع الفرع المختار لحظةَ العرض.
+    fields: (values) => [
       { name: "name", label: t("employee"), required: true },
       { name: "email", label: t("email"), type: "email", required: true },
       { name: "job_title", label: t("jobTitle") },
@@ -97,11 +116,42 @@ export function getEditorConfig(editor, branches, departments, offices, t) {
         ],
       },
       {
+        name: "branch_id",
+        label: t("branch"),
+        type: "select",
+        // تغيير الفرع يُفرغ القسم، فلا يبقى قسمٌ من فرعٍ آخر.
+        resets: ["department_id"],
+        options: [
+          { value: "", label: t("noBranchAdminLevel") },
+          ...selectableBranches(branches, editor.item?.branch_id),
+        ],
+      },
+      {
         name: "department_id",
         label: t("department"),
         type: "select",
-        options: selectableDepartments(departments, editor.item?.department_id, t),
+        options: [
+          { value: "", label: t("noDepartment") },
+          ...departmentsOfBranch(
+            departments,
+            values.branch_id,
+            editor.item?.department_id,
+            t,
+          ),
+        ],
       },
+      // الخانة لمن يملك سلطة التعيين وحده؛ والخادم يتجاهلها من غيره أيضاً.
+      ...(canAssignCommunication
+        ? [
+            {
+              name: "is_communication_officer",
+              label: t("communicationOfficer"),
+              type: "checkbox",
+              hint: t("communicationOfficerHint"),
+              wide: true,
+            },
+          ]
+        : []),
       {
         name: "office_id",
         label: t("office"),
@@ -130,7 +180,11 @@ export function getEditorConfig(editor, branches, departments, offices, t) {
       employee_number: editor.item?.employee_number || "",
       employment_type: editor.item?.employment_type || "contract",
       role: editor.item?.role || "employee",
+      branch_id: editor.item?.branch_id || "",
       department_id: editor.item?.department_id || "",
+      // الصفة صلاحية ممنوحة، فتُقرأ من صلاحيات الموظف لا من عمود.
+      is_communication_officer:
+        editor.item?.permissions?.includes("tasks.communication") || false,
       office_id: editor.item?.office_id || "",
     },
   };

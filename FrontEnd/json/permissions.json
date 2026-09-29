@@ -22,7 +22,9 @@
       "tasks.update",
       "tasks.delete_with_activities",
       "tasks.review",
-      "tasks.statistics.view"
+      "tasks.statistics.view",
+      "tasks.communication",
+      "tasks.communication.assign"
     ]
   },
   "organization": {

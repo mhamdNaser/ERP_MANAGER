@@ -52,7 +52,9 @@ class EmployeeRepository implements EmployeeRepositoryInterface
         if (! $this->scope->canManageEmployee($actor, $probe) || ! $this->scope->canAssignRole($actor, $data['role'])) throw new AuthorizationException(__('messages.organization_forbidden'));
         $role = $data['role']; $data['password'] = Hash::make($data['password']);
         $data['employment_type'] = $data['employment_type'] ?? 'contract';
+        $communication = $this->pullCommunicationFlag($data);
         $user = User::create($data); $user->syncRoles([$role]);
+        $this->applyCommunicationFlag($actor, $user, $communication);
         $this->syncDetails($user, $details);
         return $this->loadUser($user);
     }
@@ -69,8 +71,10 @@ class EmployeeRepository implements EmployeeRepositoryInterface
         $targetBranch = $data['branch_id'] ?? $user->branch_id; $targetDepartment = $data['department_id'] ?? $user->department_id;
         $probe = new User(['branch_id' => $targetBranch, 'department_id' => $targetDepartment]);
         if (! $this->scope->canManageEmployee($actor, $probe)) throw new AuthorizationException(__('messages.organization_forbidden'));
+        $communication = $this->pullCommunicationFlag($data);
         $role = $data['role'] ?? null; $user->update($data);
         if ($role) $user->syncRoles([$role]);
+        $this->applyCommunicationFlag($actor, $user, $communication);
         $this->syncDetails($user, $details);
         return $this->loadUser($user);
     }
@@ -125,5 +129,29 @@ class EmployeeRepository implements EmployeeRepositoryInterface
     private function loadUser(User $user): User
     {
         return $user->load(['branch:id,name', 'department:id,name', 'office:id,name', 'roles:id,name', 'address', 'familyDetails', 'personalDetails']);
+    }
+
+    /** صفة موظف التواصل تصل مع بيانات الموظف لكنها صلاحية لا عمود. */
+    private function pullCommunicationFlag(array &$data): ?bool
+    {
+        if (! array_key_exists('is_communication_officer', $data)) return null;
+        $value = filter_var($data['is_communication_officer'], FILTER_VALIDATE_BOOLEAN);
+        unset($data['is_communication_officer']);
+
+        return $value;
+    }
+
+    /**
+     * يُتجاهل العلم بصمت ممن لا يملك سلطة التعيين: الواجهة لا تعرض له الخانة
+     * أصلاً، فوصولها يعني طلباً مصنوعاً باليد لا خطأً يستحق إيقاف الحفظ كلّه.
+     */
+    private function applyCommunicationFlag(User $actor, User $user, ?bool $isOfficer): void
+    {
+        if ($isOfficer === null) return;
+        if (! $actor->can(User::ASSIGN_COMMUNICATION_PERMISSION)) return;
+
+        $isOfficer
+            ? $user->givePermissionTo(User::COMMUNICATION_PERMISSION)
+            : $user->revokePermissionTo(User::COMMUNICATION_PERMISSION);
     }
 }

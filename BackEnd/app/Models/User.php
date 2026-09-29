@@ -13,6 +13,17 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
+    /** صفة «موظف تواصل»: صلاحية تُمنح لأشخاص بأعيانهم، لا دور ولا عمود. */
+    public const COMMUNICATION_PERMISSION = 'tasks.communication';
+
+    /** سلطة وصف موظف بأنه موظف تواصل — غير الصفة نفسها. */
+    public const ASSIGN_COMMUNICATION_PERMISSION = 'tasks.communication.assign';
+
+    public function isCommunicationOfficer(): bool
+    {
+        return $this->hasPermissionTo(self::COMMUNICATION_PERMISSION);
+    }
+
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, HasRoles;
 

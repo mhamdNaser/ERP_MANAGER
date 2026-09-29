@@ -49,6 +49,7 @@ export default {
     task_communicationUser: "موظف التواصل",
     task_pickCommunicationUser: "اختر موظف التواصل",
     task_communicationUserHint: "سيصله إشعار بالمهمة ليضع ملاحظاته ثم يعيدها أو يرفعها للتدقيق.",
+    task_noCommunicationOfficers: 'لم يُعيَّن موظف تواصل في هذا القسم بعد، فالقائمة تعرض كل أعضائه. عيِّنهم من فورم الموظف.',
     task_moveEyebrow: "نقل على مسار العمل",
     task_moveTo: "نقل المهمة إلى: :stage",
     task_moveNote: "ملاحظة المرحلة",
@@ -270,6 +271,7 @@ export default {
     task_pickCommunicationUser: "Choose a communication officer",
     task_communicationUserHint:
       "They are notified, add their notes, then return the task or send it to review.",
+    task_noCommunicationOfficers: 'No communication officer assigned in this department yet, so every member is listed. Assign them from the employee form.',
     task_moveEyebrow: "Workflow move",
     task_moveTo: "Move the task to: :stage",
     task_moveNote: "Stage note",

@@ -23,8 +23,12 @@ interface TaskRepositoryInterface
 
     /** لوحة القسم، أو كل الأقسام عند تمرير null. */
     public function boardTasks(?int $departmentId): Collection;
-    public function members(?int $departmentId, array $departmentIds): Collection;
+    /** أعضاء القسم كمصفوفات تحمل صفة التواصل، لا كنماذج. */
+    public function members(?int $departmentId, array $departmentIds): BaseCollection;
     public function isDepartmentMember(int $userId, int $departmentId): bool;
+    /** هل عُيّن في القسم موظف تواصل؟ — يحدّد هل يُلزَم الاختيار من بينهم. */
+    public function departmentHasCommunicationOfficer(int $departmentId): bool;
+    public function isCommunicationOfficer(int $userId): bool;
     public function findUser(?int $userId): ?User;
 
     public function nextPosition(int $departmentId, string $status): int;

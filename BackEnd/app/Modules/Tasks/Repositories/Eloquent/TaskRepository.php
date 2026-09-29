@@ -56,13 +56,34 @@ class TaskRepository implements TaskRepositoryInterface
             ->get();
     }
 
-    public function members(?int $departmentId, array $departmentIds): Collection
+    public function members(?int $departmentId, array $departmentIds): BaseCollection
     {
         return User::when($departmentId, fn (Builder $query) => $query->where('department_id', $departmentId))
             ->when(! $departmentId, fn (Builder $query) => $query->whereIn('department_id', $departmentIds))
             ->where('is_active', true)
             ->orderBy('name')
-            ->get(['id', 'name', 'job_title']);
+            ->get(['id', 'name', 'job_title'])
+            // تُعلَّم صفة التواصل هنا مرةً واحدة بدل استعلام لكل عضو في الواجهة.
+            ->map(fn (User $member) => [
+                'id' => $member->id,
+                'name' => $member->name,
+                'job_title' => $member->job_title,
+                'is_communication_officer' => $member->isCommunicationOfficer(),
+            ]);
+    }
+
+    /** هل في القسم موظف تواصل معيَّن أصلاً؟ */
+    public function departmentHasCommunicationOfficer(int $departmentId): bool
+    {
+        return User::where('department_id', $departmentId)
+            ->where('is_active', true)
+            ->permission(User::COMMUNICATION_PERMISSION)
+            ->exists();
+    }
+
+    public function isCommunicationOfficer(int $userId): bool
+    {
+        return User::whereKey($userId)->permission(User::COMMUNICATION_PERMISSION)->exists();
     }
 
     public function isDepartmentMember(int $userId, int $departmentId): bool

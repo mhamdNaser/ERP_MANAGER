@@ -149,8 +149,18 @@ export function OrganizationPage({ user, notify }) {
       notify(error.message, "error");
     }
   };
+  const canAssignCommunication =
+    user?.permissions?.includes("tasks.communication.assign") === true;
   const editorConfig =
-    editor && getEditorConfig(editor, options.branches, options.departments, offices, t);
+    editor &&
+    getEditorConfig(
+      editor,
+      options.branches,
+      options.departments,
+      offices,
+      t,
+      canAssignCommunication,
+    );
   const save = async (values) => {
     if (!editor) return;
     try {
@@ -188,8 +198,16 @@ export function OrganizationPage({ user, notify }) {
           department_id: officeId
             ? undefined
             : Number(values.department_id) || undefined,
-          branch_id: officeId ? undefined : department?.branch_id,
+          // الفرع يُرسل كما اختاره المستخدم؛ وإن تركه فارغاً واختار قسماً
+          // أُخذ فرع القسم — فمن لا قسم له (مدير فرع مثلاً) يبقى له فرع.
+          branch_id: officeId
+            ? undefined
+            : Number(values.branch_id) || department?.branch_id || null,
           office_id: officeId,
+          // لا تُرسل أصلاً ممن لا يملك سلطة التعيين، فلا يبدو الحفظ محاولةَ سحب.
+          ...(canAssignCommunication
+            ? { is_communication_officer: Boolean(values.is_communication_officer) }
+            : {}),
         };
         if (values.password) data.password = String(values.password);
         await api.saveEmployee(data, editor.item?.id);

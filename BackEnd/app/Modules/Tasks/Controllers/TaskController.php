@@ -134,6 +134,7 @@ class TaskController extends Controller
             $communicationUserId = $data['communication_user_id'] ?? null;
             abort_unless($communicationUserId, 422, 'يجب اختيار موظف التواصل قبل تحويل المهمة إلى مرحلة التواصل.');
             $this->authorizeAssignee($communicationUserId, $task->department_id);
+            $this->authorizeCommunicationOfficer($communicationUserId, $task->department_id);
         }
 
         $previousStatus = $task->status;
@@ -245,6 +246,24 @@ class TaskController extends Controller
     private function notifyAssignment(Task $task, int $assigneeId): void
     {
         $this->notifyUser($task, $assigneeId, __('messages.task_assigned'));
+    }
+
+    /**
+     * الاختيار محصور بموظفي التواصل المعيَّنين في القسم. وإن لم يُعيَّن أحد بعد
+     * بقي القسم على سلوكه السابق — أي عضو فيه — كي لا يتعطّل عمل قائم قبل أن
+     * تُسنَد الصفة.
+     */
+    private function authorizeCommunicationOfficer(int $userId, int $departmentId): void
+    {
+        if (! $this->tasks->departmentHasCommunicationOfficer($departmentId)) {
+            return;
+        }
+
+        abort_unless(
+            $this->tasks->isCommunicationOfficer($userId),
+            422,
+            'الموظف المختار ليس من موظفي التواصل في هذا القسم.',
+        );
     }
 
     private function notifyCommunication(Task $task, int $communicationUserId): void

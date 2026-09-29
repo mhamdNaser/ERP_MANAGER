@@ -173,6 +173,7 @@ class RolePermissionSeeder extends Seeder
                 'forms.export',
             ],
             'general_manager' => [
+                'tasks.communication.assign',
                 'hr.view',
                 'hr.request',
                 'fleet.view',
@@ -213,6 +214,7 @@ class RolePermissionSeeder extends Seeder
                 'forms.export',
             ],
             'database_manager' => [
+                'tasks.communication.assign',
                 'hr.request',
                 'fleet.request',
                 'tasks.create',

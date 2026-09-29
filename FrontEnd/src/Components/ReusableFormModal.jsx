@@ -14,9 +14,20 @@ export function ReusableFormModal({
   const [values, setValues] = useState(initial);
   const [saving, setSaving] = useState(false);
   const [validationError, setValidationError] = useState("");
+  // تُقبل fields مصفوفةً كما كانت، أو دالّةً على القيم الحالية حين يتوقّف
+  // حقلٌ على آخر — كقائمة الأقسام التي تضيق بحسب الفرع المختار.
+  const resolvedFields = typeof fields === "function" ? fields(values) : fields;
   const change = (name, value) => {
     setValidationError("");
-    setValues((current) => ({ ...current, [name]: value }));
+    setValues((current) => {
+      const next = { ...current, [name]: value };
+      // تغيير الحقل الأب يُفرغ ما يتبعه، وإلا بقي اختيارٌ لا يطابق الأب.
+      const changed = resolvedFields.find((field) => field.name === name);
+      (changed?.resets || []).forEach((dependent) => {
+        next[dependent] = "";
+      });
+      return next;
+    });
   };
   const toggleGroupValue = (name, optionValue, checked) =>
     setValues((current) => {
@@ -31,7 +42,7 @@ export function ReusableFormModal({
     });
   const submit = async (event) => {
     event.preventDefault();
-    const invalidField = fields.find((field) => {
+    const invalidField = resolvedFields.find((field) => {
       if (!field.required) return false;
       if (field.type === "checkbox_group") return !Array.isArray(values[field.name]) || values[field.name].length === 0;
       if (field.type === "radio") return !values[field.name];
@@ -72,7 +83,7 @@ export function ReusableFormModal({
         </header>
         <form onSubmit={submit} className="flex min-h-0 flex-1 flex-col">
           <div className="grid flex-1 grid-cols-1 gap-4 overflow-y-auto p-4 md:grid-cols-2">
-            {fields.map((field) => (
+            {resolvedFields.map((field) => (
               <label
                 key={field.name}
                 className={`field mb-0 min-w-0 ${field.wide ? "md:col-span-2" : ""}`}

@@ -16,7 +16,11 @@ export function TaskMoveDialog({ task, target, members, close, confirm }) {
   const needsUser = moveNeedsCommunicationUser(target);
   const noteRequired = moveNeedsNote(task.status, target);
   const column = columnOf(target);
-  const candidates = members.filter((member) => member.id !== task.assignee?.id);
+  const inDepartment = members.filter((member) => member.id !== task.assignee?.id);
+  // الاختيار من موظفي التواصل المعيَّنين؛ وإن لم يُعيَّن أحد بعد بقيت القائمة
+  // كل أعضاء القسم، مطابقةً لما يسمح به الخادم — فلا تُقفل لوحة بلا تعيين.
+  const officers = inDepartment.filter((member) => member.is_communication_officer);
+  const candidates = officers.length ? officers : inDepartment;
 
   const submit = async (event) => {
     event.preventDefault();
@@ -69,7 +73,9 @@ export function TaskMoveDialog({ task, target, members, close, confirm }) {
               </select>
               <small className="mt-1 flex items-center gap-1.5 text-[11px] text-muted">
                 <MessagesSquare size={12} className="shrink-0" />
-                {t("task_communicationUserHint")}
+                {officers.length
+                  ? t("task_communicationUserHint")
+                  : t("task_noCommunicationOfficers")}
               </small>
             </label>
           )}
