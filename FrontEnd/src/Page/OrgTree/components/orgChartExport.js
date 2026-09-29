@@ -78,8 +78,12 @@ export function chartToSvg(chart, title) {
     : "";
   const top = title ? 44 : 0;
 
+  // direction="ltr" صريحة: الـSVG المدرَج في صفحة dir="rtl" يرث اتجاهها،
+  // فتنعكس دلالة text-anchor ويخرج كل نص من صندوقه. تثبيتها هنا يجعل الرسم
+  // واحداً سواء عُرض ملفاً مستقلاً (الصورة) أو مدرَجاً في HTML (الطباعة).
   return (
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${chart.width}" height="${chart.height + top}"` +
+    `<svg xmlns="http://www.w3.org/2000/svg" direction="ltr"` +
+    ` width="${chart.width}" height="${chart.height + top}"` +
     ` viewBox="0 0 ${chart.width} ${chart.height + top}">` +
     `<rect width="100%" height="100%" fill="#ffffff"/>` +
     heading +
@@ -95,15 +99,22 @@ function fileStamp() {
 /** يفتح نافذة طباعة — ومنها يحفظ المستخدم PDF. */
 export function printChart(chart, title) {
   const svg = chartToSvg(chart, title);
-  // landscape لأن الشجرة تمتد عرضاً، وتصغيرها إلى عرض الصفحة يمنع قصّها.
+
+  // الاتجاه يتبع شكل الشجرة: تطول رأسياً بكثرة الأقسام فتناسبها portrait،
+  // وتعرض بكثرة المستويات فتناسبها landscape.
+  const orientation = chart.width >= chart.height ? "landscape" : "portrait";
+
+  // سقفٌ على البعدين معاً: max-width وحدها لا تمنع قصّ شجرةٍ طويلة،
+  // وبها يهبط الرسم إلى صفحة واحدة محافظاً على تناسبه.
   printHtml(
     `<!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8">` +
       `<title>${escapeHtml(title)}</title><style>` +
-      `@page{size:A4 landscape;margin:10mm}` +
-      `body{margin:0;display:grid;place-items:center;background:#fff}` +
-      `svg{max-width:100%;height:auto}` +
+      `@page{size:A4 ${orientation};margin:8mm}` +
+      `html,body{margin:0;height:100%}` +
+      `body{display:grid;place-items:center;background:#fff}` +
+      `svg{max-width:100%;max-height:100%;width:auto;height:auto}` +
       `</style></head><body>${svg}</body></html>`,
-    "width=1200,height=850",
+    "width=1100,height=800",
   );
 }
 
