@@ -19,6 +19,7 @@ export const tabRouteIds = [
   "hr-requests",
   "hr",
   "fleet",
+  "maintenance",
   "employees",
   "profile",
   "guide",

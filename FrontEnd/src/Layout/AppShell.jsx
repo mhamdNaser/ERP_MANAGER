@@ -21,6 +21,7 @@ import {
   Menu,
   ShieldCheck,
   Truck,
+  Wrench,
   UserRound,
   Users,
   X,
@@ -67,6 +68,7 @@ import { OfficesPage } from "../Page/Offices";
 import { EmployeesPage } from "../Page/Employees";
 import { DocumentTemplatesPage } from "../Page/DocumentTemplates";
 import { FleetPage } from "../Page/Fleet";
+import { MaintenancePage } from "../Page/Maintenance";
 import { HrPage } from "../Page/Hr";
 import { HrMyRequestsPage } from "../Page/HrRequests";
 import { MyProfilePage } from "../Page/Profile";
@@ -80,7 +82,9 @@ export function AppShell({ user, exit }) {
   const { t } = useLanguage();
   const navigate = useNavigate();
   const { tab } = useParams();
-  const view = tabRouteIds.includes(tab) ? tab : "dashboard";
+  // تبويب مقصور عن المستخدم لا يُرسم أصلاً، ولو فُتح برابطه المباشر.
+  const hiddenTab = user.tab_visibility?.[tab] === false;
+  const view = tabRouteIds.includes(tab) && !hiddenTab ? tab : "dashboard";
   const [mobile, setMobile] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
   const [selected, setSelected] = useState(null);
@@ -115,6 +119,10 @@ export function AppShell({ user, exit }) {
   useEffect(() => {
     if (tab && !tabRouteIds.includes(tab)) navigate("/", { replace: true });
   }, [navigate, tab]);
+  // فتح تبويب مقصور برابطه المباشر يعيد إلى الرئيسية.
+  useEffect(() => {
+    if (hiddenTab) navigate("/", { replace: true });
+  }, [navigate, hiddenTab]);
   useEffect(() => {
     const closeAccountMenu = (event) => {
       if (!accountRef.current?.contains(event.target)) setAccountOpen(false);
@@ -185,6 +193,9 @@ export function AppShell({ user, exit }) {
     () =>
       navigationItems
         .filter((item) => {
+          // تبويب مقصور على جمهور لا يظهر لمن خارجه؛ ومن فيه مُنح صلاحياته
+          // من الخادم، فتكمل الفحوص المعتادة كما هي.
+          if (user.tab_visibility?.[item.id] === false) return false;
           const canUsePermission =
             !item.permission ||
             user.permissions?.includes(item.permission) ||
@@ -198,7 +209,7 @@ export function AppShell({ user, exit }) {
           icons[item.icon],
           item.section,
         ]),
-    [t, user.permissions, user.role],
+    [t, user.permissions, user.role, user.tab_visibility],
   );
   const guideItems = useMemo(
     () =>
@@ -454,6 +465,7 @@ export function AppShell({ user, exit }) {
           {view === "employees" && <EmployeesPage notify={notify} />}
           {view === "hr" && <HrPage notify={notify} />}
           {view === "fleet" && <FleetPage user={user} notify={notify} />}
+          {view === "maintenance" && <MaintenancePage user={user} notify={notify} />}
           {view === "document-templates" && <DocumentTemplatesPage notify={notify} />}
           {view === "hr-requests" && <HrMyRequestsPage user={user} notify={notify} />}
           {view === "profile" && <MyProfilePage user={user} notify={notify} />}
@@ -580,6 +592,7 @@ const icons = {
   Megaphone,
   ShieldCheck,
   Truck,
+  Wrench,
   UserRound,
   Users,
 };

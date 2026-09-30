@@ -17,6 +17,7 @@ return [
     App\Modules\Forms\Providers\FormsServiceProvider::class,
     App\Modules\Hr\Providers\HrServiceProvider::class,
     App\Modules\Fleet\Providers\FleetServiceProvider::class,
+    App\Modules\Maintenance\Providers\MaintenanceServiceProvider::class,
     App\Modules\Drive\Providers\DriveServiceProvider::class,
     App\Modules\Database\Providers\DatabaseServiceProvider::class,
     App\Modules\Templates\Providers\TemplatesServiceProvider::class,

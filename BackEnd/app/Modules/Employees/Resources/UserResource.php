@@ -1,6 +1,7 @@
 <?php
 namespace App\Modules\Employees\Resources;
 
+use App\Modules\Permissions\Services\TabAccessService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
@@ -14,7 +15,13 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id, 'name' => $this->name, 'email' => $this->email,
             'role' => $role, 'roles' => $this->getRoleNames(),
-            'permissions' => $this->getAllPermissions()->pluck('name'),
+            // جمهور التبويبات يضيف صلاحيات لمن فيه ويحجبها عمّن خارجه.
+            'permissions' => $this->getAllPermissions()->pluck('name')
+                ->merge(app(TabAccessService::class)->grantedPermissions($this->resource))
+                ->diff(app(TabAccessService::class)->deniedPermissions($this->resource))
+                ->unique()->values(),
+            // للتبويبات المقصورة على جمهور فقط؛ الشريط الجانبي يقدّمها على فحص الدور.
+            'tab_visibility' => (object) app(TabAccessService::class)->visibility($this->resource),
             'direct_permissions' => $this->getDirectPermissions()->pluck('name'), 'job_title' => $this->job_title,
             'employee_number' => $this->employee_number, 'employment_type' => $this->employment_type, 'branch_id' => $this->branch_id, 'department_id' => $this->department_id, 'office_id' => $this->office_id,
             'branch' => $this->whenLoaded('branch'), 'department' => $this->whenLoaded('department'), 'office' => $this->whenLoaded('office'), 'is_active' => $this->is_active,

@@ -366,6 +366,46 @@ const administrationApi = {
       body: toFormData({ file }),
     }),
 };
+function queryString(params) {
+  const query = new URLSearchParams(
+    Object.entries(params).filter(([, value]) => value !== "" && value != null && value !== false),
+  ).toString();
+  return query ? `?${query}` : "";
+}
+const maintenanceApi = {
+  maintenanceItems: (params = {}) => request(`/maintenance/items${queryString(params)}`),
+  maintenanceItem: (id) => request(`/maintenance/items/${id}`),
+  saveMaintenanceItem: (data, id) =>
+    request(id ? `/maintenance/items/${id}` : "/maintenance/items", {
+      method: "POST",
+      body: toFormData(id ? { ...data, _method: "PUT" } : data),
+    }),
+  deleteMaintenanceItem: (id) => request(`/maintenance/items/${id}`, { method: "DELETE" }),
+  // kind: move | receive | issue — كلها تعيد الصنف بكمياته الجديدة.
+  maintenanceMovement: (id, kind, data) =>
+    request(`/maintenance/items/${id}/${kind}`, { method: "POST", body: JSON.stringify(data) }),
+  maintenanceCatalog: () => request("/maintenance/catalog"),
+  // entity: categories | types | brands
+  saveMaintenanceCatalog: (entity, data, id) =>
+    request(id ? `/maintenance/${entity}/${id}` : `/maintenance/${entity}`, {
+      method: id ? "PUT" : "POST",
+      body: JSON.stringify(data),
+    }),
+  deleteMaintenanceCatalog: (entity, id) => request(`/maintenance/${entity}/${id}`, { method: "DELETE" }),
+  maintenanceStatistics: () => request("/maintenance/statistics"),
+  exportMaintenanceExcel: (params = {}) => requestBlob(`/maintenance/export${queryString(params)}`),
+  maintenanceImports: () => request("/maintenance/imports"),
+  previewMaintenanceImport: (data) =>
+    requestUpload("/maintenance/imports/preview", { method: "POST", body: toFormData(data) }),
+  commitMaintenanceImport: (data) =>
+    requestUpload("/maintenance/imports", { method: "POST", body: toFormData(data) }),
+  downloadMaintenanceImport: (id) => requestBlob(`/maintenance/imports/${id}/download`),
+  deleteMaintenanceImport: (id) => request(`/maintenance/imports/${id}`, { method: "DELETE" }),
+  tabAccess: () => request("/tab-access"),
+  saveTabAccess: (data) => request("/tab-access", { method: "POST", body: JSON.stringify(data) }),
+  updateTabAccess: (id, level) => request(`/tab-access/${id}`, { method: "PUT", body: JSON.stringify({ level }) }),
+  deleteTabAccess: (id) => request(`/tab-access/${id}`, { method: "DELETE" }),
+};
 export const api = {
   ...systemApi,
   ...taskApi,
@@ -375,4 +415,5 @@ export const api = {
   ...communicationApi,
   ...organizationApi,
   ...administrationApi,
+  ...maintenanceApi,
 };

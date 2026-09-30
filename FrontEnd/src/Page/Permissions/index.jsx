@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLanguage } from "../../Provider/LanguageContext";
 import { RolePermissionsTab } from "./components/RolePermissionsTab";
+import { TabAccessTab } from "./components/TabAccessTab";
 import { UserPermissionsTab } from "./components/UserPermissionsTab";
 export function PermissionsPage({ notify }) {
   const { t } = useLanguage();
@@ -18,6 +19,7 @@ export function PermissionsPage({ notify }) {
         {[
           ["roles", "permTabRoles"],
           ["users", "permTabUsers"],
+          ["tabs", "permTabTabs"],
         ].map(([id, labelKey]) => (
           <button
             key={id}
@@ -32,11 +34,9 @@ export function PermissionsPage({ notify }) {
           </button>
         ))}
       </div>
-      {tab === "roles" ? (
-        <RolePermissionsTab notify={notify} />
-      ) : (
-        <UserPermissionsTab notify={notify} />
-      )}
+      {tab === "roles" && <RolePermissionsTab notify={notify} />}
+      {tab === "users" && <UserPermissionsTab notify={notify} />}
+      {tab === "tabs" && <TabAccessTab notify={notify} />}
     </div>
   );
 }

@@ -85,6 +85,10 @@
     "labelKey": "navFleet",
     "permissions": ["fleet.view", "fleet.manage", "fleet.request", "fleet.approve"]
   },
+  "maintenance": {
+    "labelKey": "navMaintenance",
+    "permissions": ["maintenance.view", "maintenance.manage"]
+  },
   "database": {
     "labelKey": "databaseCenter",
     "permissions": ["database.backups.manage", "database.maintenance.manage"]

@@ -3,33 +3,26 @@
     "id": "dashboard",
     "labelKey": "dashboard",
     "icon": "LayoutDashboard",
-    "section": "workspace"
+    "section": "generalMenu"
   },
   {
     "id": "tasks",
     "labelKey": "navTasks",
     "icon": "KanbanSquare",
-    "section": "workspace"
-  },
-  {
-    "id": "task-stats",
-    "labelKey": "navTaskStats",
-    "icon": "ChartColumn",
-    "permission": "tasks.statistics.view",
-    "section": "workspace"
+    "section": "generalMenu"
   },
   {
     "id": "drive",
     "labelKey": "navDrive",
     "icon": "HardDrive",
-    "section": "workspace"
+    "section": "generalMenu"
   },
   {
     "id": "reports",
     "labelKey": "reports",
     "icon": "ClipboardList",
     "permission": "reports.view",
-    "section": "workspace"
+    "section": "generalMenu"
   },
   {
     "id": "new",
@@ -39,7 +32,7 @@
       "employee",
       "technician"
     ],
-    "section": "workspace"
+    "section": "generalMenu"
   },
   {
     "id": "communications",
@@ -47,99 +40,27 @@
     "icon": "Mail",
     "permission": "messages.view",
     "fallbackPermission": "correspondences.view",
-    "section": "navSectionComms"
+    "section": "generalMenu"
   },
   {
     "id": "formal-correspondences",
     "labelKey": "correspondences",
     "icon": "FileText",
     "permission": "formal_correspondences.view",
-    "section": "navSectionComms"
+    "section": "generalMenu"
+  },
+  {
+    "id": "forms",
+    "labelKey": "customForms",
+    "icon": "FileInput",
+    "section": "generalMenu"
   },
   {
     "id": "circulars",
     "labelKey": "circulars",
     "icon": "Megaphone",
     "permission": "circulars.view",
-    "section": "navSectionComms"
-  },
-  {
-    "id": "forms",
-    "labelKey": "customForms",
-    "icon": "FileInput",
-    "section": "navSectionComms"
-  },
-  {
-    "id": "organization",
-    "labelKey": "organization",
-    "icon": "Building2",
-    "permission": "organization.view",
-    "section": "navSectionAdmin"
-  },
-  {
-    "id": "offices",
-    "labelKey": "offices",
-    "icon": "Landmark",
-    "permission": "offices.manage",
-    "section": "navSectionAdmin"
-  },
-  {
-    "id": "database",
-    "labelKey": "databaseCenter",
-    "icon": "Database",
-    "roles": [
-      "database_manager"
-    ],
-    "section": "navSectionAdmin"
-  },
-  {
-    "id": "document-templates",
-    "labelKey": "navDocumentTemplates",
-    "icon": "FileStack",
-    "permission": "templates.manage",
-    "section": "navSectionAdmin"
-  },
-  {
-    "id": "org-tree",
-    "labelKey": "navOrgTree",
-    "icon": "Landmark",
-    "permission": "organization.tree.manage",
-    "roles": [
-      "database_manager"
-    ],
-    "section": "navSectionAdmin"
-  },
-  {
-    "id": "hr",
-    "labelKey": "navHr",
-    "icon": "Users",
-    "permission": "hr.view",
-    "section": "navSectionAdmin"
-  },
-  {
-    "id": "fleet",
-    "labelKey": "navFleet",
-    "icon": "Truck",
-    "permission": "fleet.request",
-    "fallbackPermission": "fleet.view",
-    "section": "navSectionAdmin"
-  },
-  {
-    "id": "employees",
-    "labelKey": "employees",
-    "icon": "Users",
-    "roles": [
-      "general_manager",
-      "database_manager"
-    ],
-    "section": "navSectionAdmin"
-  },
-  {
-    "id": "permissions",
-    "labelKey": "rolePermissions",
-    "icon": "ShieldCheck",
-    "permission": "roles.permissions.manage",
-    "section": "navSectionAdmin"
+    "section": "generalMenu"
   },
   {
     "id": "hr-requests",
@@ -158,5 +79,91 @@
     "labelKey": "navGuide",
     "icon": "BookOpenCheck",
     "section": "navSectionAccount"
+  },
+  {
+    "id": "task-stats",
+    "labelKey": "navTaskStats",
+    "icon": "ChartColumn",
+    "permission": "tasks.statistics.view",
+    "section": "navSectionsSpesial"
+  },
+  {
+    "id": "org-tree",
+    "labelKey": "navOrgTree",
+    "icon": "Landmark",
+    "permission": "organization.tree.manage",
+    "roles": [
+      "database_manager"
+    ],
+    "section": "navSectionsSpesial"
+  },
+  {
+    "id": "offices",
+    "labelKey": "offices",
+    "icon": "Landmark",
+    "permission": "offices.manage",
+    "section": "navSectionsSpesial"
+  },
+  {
+    "id": "hr",
+    "labelKey": "navHr",
+    "icon": "Users",
+    "permission": "hr.view",
+    "section": "navSectionsSpesial"
+  },
+  {
+    "id": "fleet",
+    "labelKey": "navFleet",
+    "icon": "Truck",
+    "permission": "fleet.request",
+    "fallbackPermission": "fleet.view",
+    "section": "navSectionsSpesial"
+  },
+  {
+    "id": "maintenance",
+    "labelKey": "navMaintenance",
+    "icon": "Wrench",
+    "permission": "maintenance.view",
+    "section": "navSectionsSpesial"
+  },
+  {
+    "id": "database",
+    "labelKey": "databaseCenter",
+    "icon": "Database",
+    "roles": [
+      "database_manager"
+    ],
+    "section": "navSectionAdmin"
+  },
+  {
+    "id": "document-templates",
+    "labelKey": "navDocumentTemplates",
+    "icon": "FileStack",
+    "permission": "templates.manage",
+    "section": "navSectionAdmin"
+  },
+  {
+    "id": "organization",
+    "labelKey": "organization",
+    "icon": "Building2",
+    "permission": "organization.view",
+    "section": "navSectionAdmin"
+  },
+  {
+    "id": "employees",
+    "labelKey": "employees",
+    "icon": "Users",
+    "roles": [
+      "general_manager",
+      "database_manager"
+    ],
+    "section": "navSectionAdmin"
+  },
+  {
+    "id": "permissions",
+    "labelKey": "rolePermissions",
+    "icon": "ShieldCheck",
+    "permission": "roles.permissions.manage",
+    "section": "navSectionAdmin"
   }
 ]

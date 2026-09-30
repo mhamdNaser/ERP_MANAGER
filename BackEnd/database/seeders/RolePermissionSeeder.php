@@ -65,6 +65,8 @@ class RolePermissionSeeder extends Seeder
             'fleet.manage',
             'fleet.request',
             'fleet.approve',
+            'maintenance.view',
+            'maintenance.manage',
             'templates.manage',
         ];
 
@@ -178,6 +180,7 @@ class RolePermissionSeeder extends Seeder
                 'hr.request',
                 'fleet.view',
                 'fleet.request',
+                'maintenance.view',
                 'tasks.create',
                 'tasks.update',
                 'tasks.delete_with_activities',
@@ -217,6 +220,8 @@ class RolePermissionSeeder extends Seeder
                 'tasks.communication.assign',
                 'hr.request',
                 'fleet.request',
+                'maintenance.view',
+                'maintenance.manage',
                 'tasks.create',
                 'tasks.update',
                 'tasks.delete_with_activities',

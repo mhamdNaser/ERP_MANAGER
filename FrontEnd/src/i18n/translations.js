@@ -4,6 +4,8 @@ import formalPart from './parts/formal';
 import taskPart from './parts/task';
 import guidePart from './parts/guide';
 import { fleet as fleetPart } from './parts/fleet';
+import { maintenance as maintenancePart } from './parts/maintenance';
+import { tabAccess as tabAccessPart } from './parts/tabAccess';
 import { hr as hrPart } from './parts/hr';
 import { lists as listsPart } from './parts/lists';
 import { templates as templatesPart } from './parts/templates';
@@ -15,7 +17,7 @@ const base = {
     ar: {
         navTasks: 'لوحة المهام', navTaskStats: 'إحصائيات المهام', navDrive: 'درايف الملفات', navGuide: 'دليل الواجهات',
         close: 'إغلاق', departmentAll: 'موظفو القسم', branchHeads: 'رؤساء أقسام الفرع فقط', branchAll: 'رؤساء الفرع وموظفوه', generalBranchManagers: 'مدراء الأفرع فقط', generalManagement: 'مدراء الأفرع ورؤساء الأقسام', generalAll: 'مدراء الأفرع والرؤساء والموظفون',
-        workspace: 'مساحة العمل', navSectionComms: 'الاتصالات', navSectionAdmin: 'الإدارة', navSectionAccount: 'حسابي', dashboard: 'الرئيسية', reports: 'التقارير والخطط', databaseCenter: 'إدارة قاعدة البيانات', organization: 'الهيكل التنظيمي', newReport: 'إنشاء تقرير', rolePermissions: 'صلاحيات الأدوار', messages: 'الرسائل', correspondences: 'المراسلات', circulars: 'التعاميم', offices: 'المكاتب',
+        generalMenu: 'قوائم عامة', navSectionsSpesial: 'أقسام التنقل الخاصة', navSectionAdmin: 'الإدارة', navSectionAccount: 'حسابي', dashboard: 'الرئيسية', reports: 'التقارير والخطط', databaseCenter: 'إدارة قاعدة البيانات', organization: 'الهيكل التنظيمي', newReport: 'إنشاء تقرير', rolePermissions: 'صلاحيات الأدوار', messages: 'الرسائل', correspondences: 'الديوان', circulars: 'التعاميم', offices: 'المكاتب',
         systemName: 'نظام إدارة المؤسسة', systemsOnline: 'الأنظمة تعمل', accessScope: 'نطاق الوصول', fullOrganization: 'كامل المؤسسة', systemAdmin: 'إدارة النظام',
         operationalView: 'نظرة تشغيلية مباشرة', greeting: 'صباح الخير، :name', dashboardIntro: 'هذه آخر حركة للتقارير ضمن نطاق صلاحيتك.',
         totalReports: 'إجمالي التقارير', pendingAction: 'بانتظار الإجراء', returnedReview: 'معادة للتدقيق', completedApproved: 'مكتملة ومعتمدة', thisMonth: 'هذا الشهر',
@@ -77,7 +79,7 @@ const base = {
     en: {
         navTasks: 'Tasks', navTaskStats: 'Task statistics', navDrive: 'File Drive', navGuide: 'Interface Guide',
         close: 'Close',
-        workspace: 'Workspace', navSectionComms: 'Communications', navSectionAdmin: 'Administration', navSectionAccount: 'My account', dashboard: 'Dashboard', reports: 'Reports & Plans', databaseCenter: 'Database management', organization: 'Organization', newReport: 'New Report', rolePermissions: 'Role Permissions', messages: 'Messages', correspondences: 'Correspondence', circulars: 'Circulars', offices: 'Offices',
+        generalMenu: 'general Menu', navSectionsSpesial: 'Sections Spesial', navSectionAdmin: 'Administration', navSectionAccount: 'My account', dashboard: 'Dashboard', reports: 'Reports & Plans', databaseCenter: 'Database management', organization: 'Organization', newReport: 'New Report', rolePermissions: 'Role Permissions', messages: 'Messages', correspondences: 'Correspondence', circulars: 'Circulars', offices: 'Offices',
         systemName: 'Organization Management', systemsOnline: 'Systems online', accessScope: 'Access scope', fullOrganization: 'Entire organization', systemAdmin: 'System administration',
         operationalView: 'Live operational view', greeting: 'Good morning, :name', dashboardIntro: 'Here is the latest report activity within your access scope.',
         totalReports: 'Total reports', pendingAction: 'Pending action', returnedReview: 'Returned for review', completedApproved: 'Completed & approved', thisMonth: 'This month',
@@ -138,7 +140,7 @@ const base = {
     },
 };
 
-const parts = [apiPart, drivePart, formalPart, taskPart, guidePart, uiPart, hrPart, fleetPart, templatesPart, listsPart];
+const parts = [apiPart, drivePart, formalPart, taskPart, guidePart, uiPart, hrPart, fleetPart, maintenancePart, tabAccessPart, templatesPart, listsPart];
 export const translations = {
     ar: Object.assign({}, base.ar, ...parts.map((p) => p.ar)),
     en: Object.assign({}, base.en, ...parts.map((p) => p.en)),
